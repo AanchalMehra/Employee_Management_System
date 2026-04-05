@@ -1,19 +1,58 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
-import { RouterProvider,createBrowserRouter } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 
+import LoginLanding from './Pages/LoginLanding.jsx'
+import Dashboard from './Pages/Dashboard.jsx'
+import Attendance from './Pages/Attendance.jsx'
+import Employees from './Pages/Employees.jsx'
+import Settings from './Pages/Settings.jsx'
+import Leave from './Pages/Leave.jsx'
+import PaySlips from './Pages/PaySlips.jsx'
+import Layout from './Pages/Layout.jsx'
+import LoginForm from './Components/LoginForm.jsx'
+import PrintPaySlips from './Pages/PrintPaySlips.jsx'
 
-const router=createBrowserRouter({
-  path:"/",
-  element:<App/>,
-  child:{
-    
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      
+      {
+        path: "login",
+        element: <LoginLanding />},
+        {
+          path: "login/admin",
+        element: <LoginForm role="admin" title="Admin Portal" subtitle="Sign in to manage the organization"/>
+        },
+        {
+          path: "login/employee",
+        element: <LoginForm  role="employee" title="Employee Portal" subtitle="Sign in to manage your account" />
+        },
+
+      
+      {
+        index: true,
+        element: <LoginLanding />
+      },
+
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "leave", element: <Leave /> },
+      { path: "attendance", element: <Attendance /> },
+      { path: "employees", element: <Employees /> },
+      { path: "payslips", element: <PaySlips /> },
+      { path: "settings", element: <Settings /> },
+      {path:"print/payslips",element:<PrintPaySlips/>}
+    ]
   }
-})
+]);
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router}/>
-  </StrictMode>,
-)
+    <Toaster/>
+  </StrictMode>
+);
