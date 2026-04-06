@@ -1,6 +1,5 @@
 import { ArrowLeft, Loader2Icon } from "lucide-react";
 import { EyeIcon ,EyeOffIcon} from "lucide-react";
-import { Loader2Icon } from "lucide-react";
 
 import LoginLeftSide from "./LoginLeftSide";
 import { Link } from "react-router-dom";
