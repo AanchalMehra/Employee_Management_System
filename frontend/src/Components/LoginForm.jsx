@@ -14,24 +14,17 @@ function LoginForm({ role, title, subtitle }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Add your login logic here
   };
 
   return (
     <div className="flex h-screen bg-white">
 
-      {error&&(
-        <div className="text-xs font-medium text-red-500 mt-1 animate-shake">
-            {error}
-        </div>
-      )} 
-
+      
       <LoginLeftSide />
 
       {/* RIGHT SIDE */}
-      <div className="w-1/2 flex flex-col items-center justify-center bg-gray-50 p-12">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-gray-50 p-12">
         <div className="w-full max-w-md">
           
           <Link to="/login">
@@ -45,7 +38,14 @@ function LoginForm({ role, title, subtitle }) {
           <p className="text-gray-500 mt-2 mb-8">{subtitle}</p>
 
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+            {error&&(
+        <div className="text-xs font-medium text-red-500 mt-1 animate-shake">
+            {error}
+        </div>
+      )} 
+
             <div className="flex flex-col gap-1.5">
+              
               <label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address</label>
               <input 
                 type="email" 
@@ -58,7 +58,7 @@ function LoginForm({ role, title, subtitle }) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-  <label htmlFor="password" underline className="text-sm font-semibold text-gray-700">
+  <label htmlFor="password" className="text-sm font-semibold text-gray-700">
     Password
   </label>
   
@@ -82,7 +82,7 @@ function LoginForm({ role, title, subtitle }) {
     </button>
   </div>
 </div>
-            <button type="button"
+            <button type="submit"
             disabled={loading} 
             className="mt-4 w-full bg-purple-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 active:scale-[0.98] transition">
               Sign In

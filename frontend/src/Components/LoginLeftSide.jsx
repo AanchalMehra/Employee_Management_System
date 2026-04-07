@@ -1,7 +1,7 @@
 function LoginLeftSide() {
   return (
-    <div className="w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-purple-700 
-      text-white flex flex-col items-center justify-center rounded-2xl shadow-2xl p-12">
+    <div className=" hidden md:w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-purple-700 
+      text-white md:flex  flex-1 flex-col items-center justify-center rounded-2xl shadow-2xl p-12">
       
       <h1 className="text-4xl font-extrabold tracking-tight text-center leading-tight">
         Employee Management System

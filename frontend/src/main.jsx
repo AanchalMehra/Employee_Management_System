@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { Navigate } from "react-router-dom";
 
 import LoginLanding from './Pages/LoginLanding.jsx'
 import Dashboard from './Pages/Dashboard.jsx'
@@ -17,11 +18,6 @@ import PrintPaySlips from './Pages/PrintPaySlips.jsx'
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Layout />,
-    children: [
-      
-      {
         path: "login",
         element: <LoginLanding />},
         {
@@ -35,9 +31,16 @@ const router = createBrowserRouter([
 
       
       {
-        index: true,
-        element: <LoginLanding />
-      },
+     index: true,
+        element: <Navigate to="/login" />
+         },
+
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      
+      
 
       { path: "dashboard", element: <Dashboard /> },
       { path: "leave", element: <Leave /> },
