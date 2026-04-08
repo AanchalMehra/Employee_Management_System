@@ -30,7 +30,7 @@ function LoginLanding(){
   </Link>
 
   {/* Employee Button */}
-  <Link to="/employee" className="group">
+  <Link to="employee" className="group">
     <button className="relative flex justify-between items-center w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-2xl shadow-lg shadow-purple-500/30 overflow-hidden transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl group-active:scale-95">
       <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
       
