@@ -18,7 +18,7 @@ function SideBar(){
         setMobileOpen(false)
      },[pathname])
 
-     const role=""||"ADMIN"
+     const role=""||"EMPLOYEE"
      const navItems=[
         {name:"Dashboard",href:"/dashboard",icon:LayoutGridIcon},
         role==="ADMIN"?

@@ -14,8 +14,8 @@ function AdminDashboard({data}){
     
     icon: <Building2Icon size={20} />,
     value: data.totalDepartments,
-    label: "Total Deparments",
-    description:"Oranization Units"
+    label: "Total Departments",
+    description:"Organization Units"
 },
 {
     icon: <Calendar1Icon size={20} />,

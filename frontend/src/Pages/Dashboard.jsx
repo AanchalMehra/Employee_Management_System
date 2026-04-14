@@ -14,7 +14,7 @@ function Dashboard(){
      },[])
 
      if(loading) return <Loading/>
-     if(!data) return <p text-center text-slate-500 py-2>Failed to Load Dashboard</p>
+     if(!data) return <p className="text-center text-slate-500 py-2">Failed to Load Dashboard</p>
     
 
     if(data.role==="ADMIN")return <AdminDashboard  data={data}/>
