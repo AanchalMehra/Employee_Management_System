@@ -24,7 +24,7 @@ const cards=[{
     <>
       <div  className="mb-6">
          <h1 className="font-semibold text-2xl ">Welcome, {firstName}!</h1>
-         <p className="text-slate-400 text-sm mt-1">{data.status} - {data.dept}</p>
+         <p className="text-slate-400 text-sm mt-1">{data.position} - {data.dept}</p>
       </div>
 
 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 bg-white">
