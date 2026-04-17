@@ -48,7 +48,7 @@ const router = createBrowserRouter([
       { path: "employees", element: <Employees /> },
       { path: "payslips", element: <PaySlips /> },
       { path: "settings", element: <Settings /> },
-      {path:"print/payslips",element:<PrintPaySlips/>}
+      {path:"print/payslips/:id",element:<PrintPaySlips/>}
     ]
   }
 ]);
