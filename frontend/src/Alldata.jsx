@@ -1,116 +1,180 @@
-// Departments
-export const departments = [
-  "Engineering",
-  "Human Resources",
-  "Marketing",
-  "Sales",
-  "Finance",
-  "Operations",
-  "IT Support",
-  "Customer Success",
-  "Product Management",
-  "Design"
-];
+export const departments = ["Engineering", "Human Resources", "Marketing", "Sales", "Finance", "Operations", "IT Support", "Customer Success", "Product Management", "Design"];
 
-// Profile
-export const profile = {
-  _id: "EMP1003",
-  firstName: "John",
-  lastName: "Doe",
-  email: "johndoe@example.com",
-  image: null,
+export const dummyAdminDashboardData = {
+    role: "ADMIN",
+    totalEmployees: 3,
+    totalDepartments: 10,
+    todayAttendance: 1,
+    pendingLeaves: 1,
 };
 
-// Admin Dashboard
-export const dummyAdminData = {
-  name: "Admin User",
-  role: "ADMIN",
-  dept: "Operations",
-  totalEmployees: 3,
-  totalDepartments: 10,
-  todayAttendance: 2,
-  pendingLeaves: 1,
+export const dummyEmployeeDashboardData = {
+    currentMonthAttendance: 20,
+    pendingLeaves: 2,
+    latestPayslip: {
+        netSalary: 2000,
+    },
+    employee: {
+        firstName: "John",
+        lastName: "Doe",
+        position: "Software Engineer",
+        department: "Engineering",
+    },
 };
 
-// Employees
-export const employeeData = [
-  {
-    employeeId: "EMP1001",
-    firstName: "David",
-    lastName: "Michael",
-    department: "IT Support",
-    position: "Associate Business Support",
-    attendance: { present: 20, leave: 2 },
-    leaves: [],
-    payslips: [],
-  },
-  {
-    employeeId: "EMP1002",
-    firstName: "Alex",
-    lastName: "Matthew",
-    department: "Engineering",
-    position: "Software Developer",
-    attendance: { present: 22, leave: 1 },
-    leaves: [],
-    payslips: [],
-  },
-  {
-    employeeId: "EMP1003",
+export const dummyProfileData = {
+    _id: "69b411e6f8a807df391d7b13",
     firstName: "John",
     lastName: "Doe",
-    department: "Engineering",
-    position: "Senior Software Developer",
-    attendance: { present: 21, leave: 1 },
-    leaves: [],
-    payslips: [],
-  },
+    email: "johndoe@example.com",
+    image: null,
+};
+
+export const employeeData = [
+    {
+        _id: "69b414a7f8a807df391d7b58",
+        userId: {
+            _id: "69b414a7f8a807df391d7b56",
+            email: "david@example.com",
+            role: "EMPLOYEE",
+        },
+        department: "IT Support",
+        firstName: "David",
+        lastName: "Michael",
+        email: "david@example.com",
+        phone: "9000000001",
+        position: "Associate Business Support",
+        basicSalary: 1000,
+        allowances: 100,
+        deductions: 9.98,
+        employmentStatus: "ACTIVE",
+        joinDate: "2000-01-20T00:00:00.000Z",
+        image: null,
+        isDeleted: false,
+        bio: "",
+        createdAt: "2026-03-13T13:44:07.806Z",
+        updatedAt: "2026-03-13T13:44:07.806Z",
+        id: "69b414a7f8a807df391d7b58",
+        user: {
+            email: "david@example.com",
+            role: "EMPLOYEE",
+        },
+    },
+    {
+        _id: "69b41439f8a807df391d7b52",
+        userId: {
+            _id: "69b41439f8a807df391d7b50",
+            email: "alex@example.com",
+            role: "EMPLOYEE",
+        },
+        department: "Engineering",
+        firstName: "Alex",
+        lastName: "Matthew",
+        email: "alex@example.com",
+        phone: "9000000001",
+        position: "Software Developer",
+        basicSalary: 2000,
+        allowances: 100,
+        deductions: 20,
+        employmentStatus: "ACTIVE",
+        joinDate: "2000-01-20T00:00:00.000Z",
+        image: null,
+        isDeleted: false,
+        bio: "",
+        createdAt: "2026-03-13T13:42:17.589Z",
+        updatedAt: "2026-03-13T13:42:17.589Z",
+        id: "69b41439f8a807df391d7b52",
+        user: {
+            email: "alex@example.com",
+            role: "EMPLOYEE",
+        },
+    },
+    {
+        _id: "69b411e6f8a807df391d7b13",
+        userId: {
+            _id: "69b411e5f8a807df391d7b11",
+            email: "johndoe@example.com",
+            role: "EMPLOYEE",
+        },
+        department: "Engineering",
+        firstName: "John",
+        lastName: "Doe",
+        email: "johndoe@example.com",
+        phone: "9000000001",
+        position: "Senior Software Developer",
+        basicSalary: 40000,
+        allowances: 10000,
+        deductions: 2000,
+        employmentStatus: "ACTIVE",
+        joinDate: "2000-01-20T00:00:00.000Z",
+        image: null,
+        isDeleted: false,
+        bio: "Hi, I am dev a full stack web developer",
+        createdAt: "2026-03-13T13:32:22.013Z",
+        updatedAt: "2026-03-13T13:33:20.498Z",
+        id: "69b411e6f8a807df391d7b13",
+        user: {
+            email: "johndoe@example.com",
+            role: "EMPLOYEE",
+        },
+    },
 ];
 
-// Leaves
 export const dummyLeaveData = [
-  {
-    _id: "L1",
-    employeeId: "EMP1001",
-    type: "ANNUAL",
-    startDate: "2026-03-27",
-    endDate: "2026-03-29",
-    reason: "Out for a trip",
-    status: "APPROVED",
-    employee: employeeData[0],
-  },
-  {
-    _id: "L2",
-    employeeId: "EMP1002",
-    type: "CASUAL",
-    startDate: "2026-03-23",
-    endDate: "2026-03-24",
-    reason: "Going for vacations",
-    status: "REJECTED",
-    employee: employeeData[1],
-  },
-  {
-    _id: "L3",
-    employeeId: "EMP1003",
-    type: "CASUAL",
-    startDate: "2026-03-27",
-    endDate: "2026-03-28",
-    reason: "Temple visit",
-    status: "PENDING",
-    employee: employeeData[2],
-  },
-  {
-    _id: "L4",
-    employeeId: "EMP1001",
-    type: "SICK",
-    startDate: "2026-03-15",
-    endDate: "2026-03-16",
-    reason: "Leg fracture",
-    status: "APPROVED",
-    employee: employeeData[0],
-  },
+    {
+        _id: "69b4165af8a807df391d7bfd",
+        employeeId: "69b41439f8a807df391d7b52",
+        type: "ANNUAL",
+        startDate: "2026-03-27T00:00:00.000Z",
+        endDate: "2026-03-29T00:00:00.000Z",
+        reason: "Out for a trip",
+        status: "APPROVED",
+        createdAt: "2026-03-13T13:51:22.716Z",
+        updatedAt: "2026-03-13T13:51:43.139Z",
+        id: "69b4165af8a807df391d7bfd",
+        employee: employeeData[0],
+    },
+    {
+        _id: "69b4163cf8a807df391d7bf8",
+        employeeId: "69b41439f8a807df391d7b52",
+        type: "CASUAL",
+        startDate: "2026-03-23T00:00:00.000Z",
+        endDate: "2026-03-24T00:00:00.000Z",
+        reason: "Going For Vacations ",
+        status: "REJECTED",
+        createdAt: "2026-03-13T13:50:52.117Z",
+        updatedAt: "2026-03-13T13:51:46.450Z",
+        id: "69b4163cf8a807df391d7bf8",
+        employee: employeeData[1],
+    },
+    {
+        _id: "69b415fcf8a807df391d7be0",
+        employeeId: "69b411e6f8a807df391d7b13",
+        type: "CASUAL",
+        startDate: "2026-03-27T00:00:00.000Z",
+        endDate: "2026-03-28T00:00:00.000Z",
+        reason: "Going to visit a temple",
+        status: "PENDING",
+        createdAt: "2026-03-13T13:49:48.618Z",
+        updatedAt: "2026-03-13T13:51:44.251Z",
+        id: "69b415fcf8a807df391d7be0",
+        employee: [employeeData[2]],
+    },
+    {
+        _id: "69b415dff8a807df391d7bdb",
+        employeeId: "69b411e6f8a807df391d7b13",
+        type: "SICK",
+        startDate: "2026-03-15T00:00:00.000Z",
+        endDate: "2026-03-16T00:00:00.000Z",
+        reason: "I had a fracture on leg",
+        status: "APPROVED",
+        createdAt: "2026-03-13T13:49:19.204Z",
+        updatedAt: "2026-03-13T13:51:45.418Z",
+        id: "69b415dff8a807df391d7bdb",
+        employee: employeeData[0],
+    },
 ];
 
-// Payslips
 export const dummyPayslipData = [
     {
         _id: "69b41595f8a807df391d7baa",
@@ -198,7 +262,6 @@ export const dummyPayslipData = [
     },
 ];
 
-// Attendance
 export const dummyAttendanceData = [
     {
         _id: "69b68d19f4437fdd254d5a68",
@@ -206,7 +269,7 @@ export const dummyAttendanceData = [
         date: "2026-03-14T18:30:00.000Z",
         checkIn: "2026-03-15T10:42:33.966Z",
         checkOut: "2026-03-15T18:42:37.476Z",
-        status: "Present",
+        status: "PRESENT",
         workingHours: 8,
         dayType: "Full Day",
         createdAt: "2026-03-15T10:42:33.973Z",
@@ -218,50 +281,13 @@ export const dummyAttendanceData = [
         date: "2026-03-12T18:30:00.000Z",
         checkIn: "2026-03-13T13:48:41.416Z",
         checkOut: "2026-03-13T21:48:42.430Z",
-        status: "Present",
+        status: "PRESENT",
         workingHours: 8,
         dayType: "Full Day",
         createdAt: "2026-03-13T13:48:41.418Z",
         updatedAt: "2026-03-13T13:48:42.433Z",
     },
-    {
-  _id: "69b50001f8a807df391d7c01",
-  employeeId: "69b41439f8a807df391d7b52",
-  date: "2026-03-13T18:30:00.000Z",
-  checkIn: "2026-03-14T04:10:00.000Z",
-  checkOut: "2026-03-14T12:30:00.000Z",
-  status: "Present",
-  workingHours: 8.3,
-  dayType: "Full Day",
-  createdAt: "2026-03-14T04:10:05.000Z",
-  updatedAt: "2026-03-14T12:30:10.000Z",
-},
-{
-  _id: "69b50002f8a807df391d7c02",
-  employeeId: "69b414a7f8a807df391d7b58",
-  date: "2026-03-13T18:30:00.000Z",
-  checkIn: "2026-03-14T06:45:00.000Z",
-  checkOut: "2026-03-14T13:30:00.000Z",
-  status: "Late",
-  workingHours: 6.75,
-  dayType: "Half Day",
-  createdAt: "2026-03-14T06:45:10.000Z",
-  updatedAt: "2026-03-14T13:30:15.000Z",
-},
-{
-  _id: "69b50003f8a807df391d7c03",
-  employeeId: "69b411e6f8a807df391d7b13",
-  date: "2026-03-13T18:30:00.000Z",
-  checkIn: null,
-  checkOut: null,
-  status: "Absent",
-  workingHours: 0,
-  dayType: "Short Day",
-  createdAt: "2026-03-14T00:00:00.000Z",
-  updatedAt: "2026-03-14T00:00:00.000Z",
-}
 ];
-
 
 
 export function getWorkingHoursDisplay(record) {

@@ -2,7 +2,7 @@ import { Calendar1Icon, DollarSignIcon, FileTextIcon, LayoutGridIcon,
      MenuIcon, Settings, UserIcon, XIcon, LogOutIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import {  useLocation } from "react-router-dom";
-import { profile } from "../Alldata";
+import { dummyProfileData } from "../Alldata";
 import { NavLink } from "react-router-dom";
 
 function SideBar(){
@@ -11,7 +11,7 @@ function SideBar(){
      const [mobileOpen,setMobileOpen]=useState(true);
 
      useEffect(()=>{
-        setUserName(profile.firstName +" "+ profile.lastName)
+        setUserName(dummyProfileData.firstName +" "+ dummyProfileData.lastName)
      },[])
     //close the mobile menu when route changes
       useEffect(()=>{
