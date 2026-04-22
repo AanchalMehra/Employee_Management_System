@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import User from "./UserModel";
-import { departments } from "../Department";
+import User from "./UserModel.js";
+import { departments } from "../Department.js";
 
 const EmployeeSchema=new mongoose.Schema(
     {

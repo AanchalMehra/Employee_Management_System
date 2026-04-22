@@ -1,7 +1,7 @@
 //Get profile
 //  /api/profile
 
-import Employee from "../models/EmployeeModel";
+import Employee from "../models/EmployeeModel.js";
 
 export const getProfile= async(req,res)=>{
     try{
