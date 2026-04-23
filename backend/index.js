@@ -12,6 +12,7 @@ import profileRouter from "./routes/ProfileRoutes.js";
 import attendanceRouter from "./routes/AttendanceRoutes.js";
 import LeaveRouter from "./routes/LeaveRoutes.js";
 import paySlipRouter from "./routes/PaySlipsRoutes.js";
+import dashboardRouter from "./routes/DashboardRoutes.js";
 
 const app=express();
 
@@ -31,5 +32,6 @@ app.use('/api/profile',profileRouter)
 app.use('/api/attendance',attendanceRouter)
 app.use('/api/leave',LeaveRouter)
 app.use('/api/payslips',paySlipRouter)
+app.use('/api/dashboard',dashboardRouter)
 
 app.listen(PORT,()=>console.log(`Server is running on port ${PORT}`))
