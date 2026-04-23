@@ -1,6 +1,6 @@
-import Employee from "../models/EmployeeModel";
+import Employee from "../models/EmployeeModel.js";
 import bcrypt from "bcrypt";
-import User from "../models/UserModel";
+import User from "../models/UserModel.js";
 
 export const getEmployees=async(req,res)=>{
     try{
@@ -90,7 +90,7 @@ export const updateEmployees=async(req,res)=>{
         if(!employee) return res.status(404).json({err:"employee not found"})
 
 
-        const employee=await Employee.findByIdAndUpdate(id,{
+        await Employee.findByIdAndUpdate(id,{
             firstName,
             lastName,
             email,

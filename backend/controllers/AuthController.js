@@ -1,10 +1,9 @@
 //Login for employee and admin
 //POST -> api/auth/login
 
-import User from "../models/UserModel";
+import User from "../models/UserModel.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from "../models/UserModel";
 
 export const login=async(req,res)=>{
     try{
