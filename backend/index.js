@@ -46,7 +46,7 @@ app.all("/api/inngest", (req, res, next) => {
 });
 
 app.use(express.json());
-//app.use(multer().none());
+app.use(multer().none());
 app.use("/api/auth", authRouter);
 app.use("/api/employees", employeeRouter);
 app.use("/api/profile", profileRouter);
