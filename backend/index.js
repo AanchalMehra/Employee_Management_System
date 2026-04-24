@@ -55,10 +55,10 @@ app.use("/api/dashboard", dashboardRouter);
 
 
 /* ✅ ONLY RUN SERVER LOCALLY (NOT ON VERCEL) */
-//if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
     app.listen(PORT, () =>
         console.log(`Server is running on port ${PORT}`)
     );
-//}
+}
 
 export default app;
