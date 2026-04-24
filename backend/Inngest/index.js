@@ -201,26 +201,23 @@ const attendanceReminderCron = inngest.createFunction(
         },
       }).lean();
 
-      return attendance.map((a) => a.employeeId.toString());
-    });
+           return attendance.map((a)=> a.employeeId.toString());
 
-    // find absent employees
-    const absentEmployees = activeEmployees.filter((emp) => {
-      return (
-        !onLeaveIds.includes(emp._id) &&
-        !checkedInIds.includes(emp._id)
-      );
-    });
+    })
 
-    // send emails
-    if (absentEmployees.length > 0) {
-      await step.run("send-reminder-emails", async () => {
-        const emailPromises = absentEmployees.map((emp) => {
-          return sendEmail({
-            to: emp.email,
-            subject: "Attendance Reminder - Please mark your attendance",
-            body: `
-              <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    const absentEmployees=activeEmployees.filter((emp)=>{
+      !onLeaveIds.includes(emp._id) && checkedInIds.includes(emp._id)
+    })
+
+    if(absentEmployees.length>0){
+      await step.run("send-reminder-emails",async()=>{
+        const emailPromises=absentEmployees.map(async(emp)=>{
+          //send email
+          await sendEmail({
+            to:emp.email,
+            subject:"Attendance Reminder-Please mark your attendance",
+             body :`
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
 
                 <h2>Hi ${emp.firstName},</h2>
 
