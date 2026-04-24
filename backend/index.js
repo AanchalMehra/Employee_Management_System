@@ -31,6 +31,10 @@ app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
+app.all("/api/inngest", (req, res, next) => {
+  console.log("INNGEST ROUTE HIT");
+  return serve({ client: inngest, functions })(req, res, next);
+});
 app.use("/api/auth", authRouter);
 app.use("/api/employees", employeeRouter);
 app.use("/api/profile", profileRouter);
@@ -39,7 +43,6 @@ app.use("/api/leave", LeaveRouter);
 app.use("/api/payslips", paySlipRouter);
 app.use("/api/dashboard", dashboardRouter);
 
-app.all("/api/inngest", serve({ client: inngest, functions }));
 
 /* ✅ ONLY RUN SERVER LOCALLY (NOT ON VERCEL) */
 if (process.env.NODE_ENV !== "production") {
