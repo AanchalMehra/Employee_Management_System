@@ -32,19 +32,17 @@ app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
-app.all("/api/inngest", (req, res, next) => {
-  console.log("--- Handshake Attempt ---");
-  console.log("Client ID:", inngest.id);
-  console.log("Functions found:", functions?.length || 0);
-
-  const handler = serve({ client: inngest, functions });
-  
-  return handler(req, res, next).catch(err => {
-    console.error("CRITICAL INNGEST ERROR:", err.message);
-    res.status(500).send(err.message);
+app.all("/api/inngest", (req, res) => {
+  // We use the serve handler directly without the 'next' middleware wrapper
+  // to ensure Vercel handles the body stream correctly.
+  const handler = serve({ 
+    client: inngest, 
+    functions,
+    signingKey: process.env.INNGEST_SIGNING_KEY 
   });
+  
+  return handler(req, res);
 });
-
 app.use(express.json());
 app.use(multer().none());
 app.use("/api/auth", authRouter);
