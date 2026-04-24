@@ -7,6 +7,8 @@ import multer from "multer";
 import cors from "cors";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./Inngest/index.js";
+console.log("DEBUG: Inngest Client ID ->", inngest?.id);
+console.log("DEBUG: Functions Array ->", functions);
 
 import employeeRouter from "./routes/EmployeeRoutes.js";
 import authRouter from "./routes/AuthRoutes.js";
@@ -24,17 +26,27 @@ dbConnection();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
-app.use(express.json());
-app.use(multer().none());
+
 
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
 app.all("/api/inngest", (req, res, next) => {
-  console.log("INNGEST ROUTE HIT");
-  return serve({ client: inngest, functions })(req, res, next);
+  console.log("--- Handshake Attempt ---");
+  console.log("Client ID:", inngest.id);
+  console.log("Functions found:", functions?.length || 0);
+
+  const handler = serve({ client: inngest, functions });
+  
+  return handler(req, res, next).catch(err => {
+    console.error("CRITICAL INNGEST ERROR:", err.message);
+    res.status(500).send(err.message);
+  });
 });
+
+app.use(express.json());
+//app.use(multer().none());
 app.use("/api/auth", authRouter);
 app.use("/api/employees", employeeRouter);
 app.use("/api/profile", profileRouter);
@@ -45,10 +57,10 @@ app.use("/api/dashboard", dashboardRouter);
 
 
 /* ✅ ONLY RUN SERVER LOCALLY (NOT ON VERCEL) */
-if (process.env.NODE_ENV !== "production") {
+//if (process.env.NODE_ENV !== "production") {
     app.listen(PORT, () =>
         console.log(`Server is running on port ${PORT}`)
     );
-}
+//}
 
 export default app;
