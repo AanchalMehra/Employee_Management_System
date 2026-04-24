@@ -173,7 +173,7 @@ const attendanceReminderCron = inngest.createFunction(
 
     if(absentEmployees.length>0){
       await step.run("send-reminder-emails",async()=>{
-        const emailPromises=absentEmployees.map((emp)=>{
+        const emailPromises=absentEmployees.map(async(emp)=>{
           //send email
           await sendEmail({
             to:emp.email,
