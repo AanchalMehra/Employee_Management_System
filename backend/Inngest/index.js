@@ -205,9 +205,10 @@ const attendanceReminderCron = inngest.createFunction(
 
     })
 
-    const absentEmployees=activeEmployees.filter((emp)=>{
-      !onLeaveIds.includes(emp._id) && checkedInIds.includes(emp._id)
-    })
+    const absentEmployees = activeEmployees.filter((emp) =>
+  !onLeaveIds.includes(emp._id) &&
+  !checkedInIds.includes(emp._id)
+);
 
     if(absentEmployees.length>0){
       await step.run("send-reminder-emails",async()=>{

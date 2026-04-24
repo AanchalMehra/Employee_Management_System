@@ -5,6 +5,8 @@ import express from "express";
 import dbConnection from "./config/db.js";
 import multer from "multer";
 import cors from "cors";
+import { serve } from "inngest/express";
+import { inngest, functions } from "./Inngest/index.js";
 
 import employeeRouter from "./routes/EmployeeRoutes.js";
 import authRouter from "./routes/AuthRoutes.js";
@@ -13,6 +15,7 @@ import attendanceRouter from "./routes/AttendanceRoutes.js";
 import LeaveRouter from "./routes/LeaveRoutes.js";
 import paySlipRouter from "./routes/PaySlipsRoutes.js";
 import dashboardRouter from "./routes/DashboardRoutes.js";
+
 
 const app = express();
 
@@ -36,7 +39,7 @@ app.use("/api/leave", LeaveRouter);
 app.use("/api/payslips", paySlipRouter);
 app.use("/api/dashboard", dashboardRouter);
 
-
+app.all("/api/inngest", serve({ client: inngest, functions }));
 
 /* ✅ ONLY RUN SERVER LOCALLY (NOT ON VERCEL) */
 if (process.env.NODE_ENV !== "production") {
