@@ -3,6 +3,8 @@ import dotenv from "dotenv"
 dotenv.config();
 
 import express from "express"
+import { serve } from "inngest/express";
+import { inngest, functions } from "./Inngest/index.js";
 import dbConnection from "./config/db.js"
 import multer from "multer";
 import cors from "cors";
@@ -33,5 +35,8 @@ app.use('/api/attendance',attendanceRouter)
 app.use('/api/leave',LeaveRouter)
 app.use('/api/payslips',paySlipRouter)
 app.use('/api/dashboard',dashboardRouter)
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
+
 
 app.listen(PORT,()=>console.log(`Server is running on port ${PORT}`))
