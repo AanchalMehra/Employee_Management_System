@@ -1,66 +1,75 @@
-import { useState,useCallback,useEffect} from "react";
-import {dummyAttendanceData} from "../Alldata"
-import Loading from "../Components/Loading";
-import { CheckInButton } from "../Components/CheckInButton";
-import AttendanceStats from "../Components/AttendanceStats";
-import { AttendanceHistory } from "../Components/AttendanceHistory";
-import api from "../api/axios";
-import toast from "react-hot-toast";
-function Attendance(){
-    const [history,setHistory]=useState([])
-    const [loading,setLoading]=useState(true)
-    const [isDeleted,setIsDeleted]=useState(true)
+import { Loader2Icon, LogInIcon, LogOutIcon } from 'lucide-react'
+import { useState } from 'react'
+import api from '../api/axios'
+import toast from 'react-hot-toast'
 
-    const fetchData=useCallback(async()=>{
-        try{
-          const res=await api.get('/attendance')
-          const json=res.data
-          setHistory(json.data || [])
-          if(json.employee?.isDeleted) setIsDeleted(true)
+export const CheckInButton = ({ todayRecord, onAction }) => {
+  const [loading, setLoading] = useState(false)
 
-        }
-        catch(err){
-          toast.error(err?.response?.data?.err ||err.message)
+  const handleAttendance = async () => {
+    
 
-        }
-        finally{
-          setLoading(false)
-        }
-    },[])
+    setLoading(true)
+    try {
+      await api.post("/attendance")
+      await onAction()   
+    } catch (err) {
+      toast.error(err?.response?.data?.err || err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    useEffect(()=>{
-        fetchData()
-    },[fetchData])
-
-    if(loading) return <Loading/>
-
-    const today=new Date()
-    today.setHours(0,0,0,0)
-    const todayRecord=history.find((r)=>new Date(r.date).toDateString()===today.toDateString())
-    return(
-        <div className="space-y-6 mb-8">
-
-  {/* Header */}
-  <div className="flex justify-between items-center">
-    <div>
-      <h1 className="font-semibold text-2xl">Attendance</h1>
-      <p className="text-slate-400 text-sm mt-1">
-        Track your work hours and daily check-ins
-      </p>
-    </div>
-
-    <CheckInButton 
-      todayRecord={todayRecord} 
-      onAction={fetchData}
-    />
-  </div>
-
-  {/* Stats BELOW */}
-  <AttendanceStats history={history} />
-
-  <AttendanceHistory history={history}/>
-
-</div>
+  // If already checked out ,show completed
+  if (todayRecord?.checkOut) {
+    return (
+      <div className="absolute bottom-4 right-4 bg-green-50 border border-green-200 px-4 py-3 rounded-xl shadow-sm">
+        <h3 className="font-semibold text-green-700">Work day completed</h3>
+        <p className="text-sm text-green-600 mt-1">Great job! See you tomorrow</p>
+      </div>
     )
+  }
+
+  const isCheckedIn = !!todayRecord?.checkIn
+
+  return (
+    <div className="absolute bottom-4 right-4 flex flex-col z-10">
+      <button
+        disabled={loading}
+        onClick={handleAttendance}
+        className={`
+          flex items-center gap-5 w-50 text-sm rounded-xl transition-all duration-300 border px-3 py-2
+          ${loading ? "bg-slate-50 border-slate-200 cursor-not-allowed" :
+            isCheckedIn
+              ? "bg-rose-50 border-rose-200 hover:bg-rose-100 text-rose-700"
+              : "bg-indigo-100 border-indigo-200 hover:bg-indigo-200 text-indigo-700"}
+          active:scale-[0.98]
+        `}
+      >
+        {/* Icon */}
+        <div className={`
+          flex items-center justify-center p-2 rounded-lg
+          ${isCheckedIn ? "bg-rose-200 text-rose-700" : "bg-indigo-200 text-indigo-700"}
+        `}>
+          {loading ? (
+            <Loader2Icon className="size-4 animate-spin" />
+          ) : isCheckedIn ? (
+            <LogOutIcon className="size-4" />
+          ) : (
+            <LogInIcon className="size-4" />
+          )}
+        </div>
+
+        {/* Text */}
+        <div className="text-left">
+          <h2 className="text-lg font-semibold">
+            {loading ? "Processing..." : isCheckedIn ? "Clock Out" : "Clock In"}
+          </h2>
+          <p className="text-xs opacity-80">
+            {isCheckedIn ? "End your shift?" : "Start your work day!"}
+          </p>
+        </div>
+      </button>
+    </div>
+  )
 }
-export default Attendance;
