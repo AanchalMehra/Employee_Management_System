@@ -15,6 +15,7 @@ import PaySlips from './Pages/PaySlips.jsx'
 import Layout from './Pages/Layout.jsx'
 import LoginForm from './Components/LoginForm.jsx'
 import PrintPaySlips from './Pages/PrintPaySlips.jsx'
+import { AuthProvider } from "./context/AuthContext.jsx"
 
 const router = createBrowserRouter([
   {
@@ -31,9 +32,9 @@ const router = createBrowserRouter([
 
       
       {
-     index: true,
-        element: <Navigate to="/login" />
-         },
+  index: true,
+  element: <Navigate to="/dashboard" replace />
+},
 
   {
     path: "/",
@@ -55,7 +56,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router}/>
+    <AuthProvider>
+       <RouterProvider router={router}/>
+    </AuthProvider>
     <Toaster/>
+   
   </StrictMode>
 );

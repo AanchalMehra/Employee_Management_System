@@ -1,24 +1,31 @@
 import { Calendar1Icon, DollarSignIcon, FileTextIcon, LayoutGridIcon,
-     MenuIcon, Settings, UserIcon, XIcon, LogOutIcon } from "lucide-react";
+     MenuIcon, Settings, UserIcon, XIcon, LogOutIcon, 
+     Loader2Icon} from "lucide-react";
 import { useEffect, useState } from "react";
 import {  useLocation } from "react-router-dom";
 import { dummyProfileData } from "../Alldata";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import api from "../api/axios";
 
 function SideBar(){
     const {pathname}=useLocation();
     const[userName,setUserName]=useState("")
      const [mobileOpen,setMobileOpen]=useState(true);
 
+     const{user,loading,logout}=useAuth();
+
      useEffect(()=>{
-        setUserName(dummyProfileData.firstName +" "+ dummyProfileData.lastName)
+      api.get('/profile').then(({data})=>{
+        if(data.firstName) setUserName(`${data.firstName}  ${data.lastName || " "} `.trim())
+      })
      },[])
     //close the mobile menu when route changes
       useEffect(()=>{
         setMobileOpen(false)
      },[pathname])
 
-     const role=""||"EMPLOYEE"
+     const role=user?.role;
      const navItems=[
         {name:"Dashboard",href:"/dashboard",icon:LayoutGridIcon},
         role==="ADMIN"?
@@ -31,6 +38,7 @@ function SideBar(){
     ]
     
     const handleLogOut=()=>{
+        logout();
         window.location.href="/login"
     }
 
@@ -73,7 +81,14 @@ function SideBar(){
 
       {/* Navigation Links */}
       <div className="px-5">
-        <p className="uppercase text-slate-500 font-semibold text-[10px] px-2 pb-2">Navigation</p>
+        {loading?(
+          <div className="text-slate-500 px-3 py-3 flex items-center gap-2">
+            <Loader2Icon className="animate-spin w-4 h-4"/>
+            <span className="text-sm">Loading....</span>
+          </div>
+
+        ): ( <>
+         <p className="uppercase text-slate-500 font-semibold text-[10px] px-2 pb-2">Navigation</p>
         <nav className="space-y-1">
           {navItems.map((item, index) => {
             const Icon = item.icon;
@@ -92,7 +107,13 @@ function SideBar(){
             );
           })}
         </nav>
-      </div>
+        </>)
+        
+      
+        
+        }
+        </div>
+       
     </div>
 
     {/* Bottom Section: Log Out */}

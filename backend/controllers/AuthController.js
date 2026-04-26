@@ -9,24 +9,25 @@ export const login=async(req,res)=>{
     try{
         const {email,password,role_type}=req.body;
         if(!email || !password){
-           return res.status(400).res.json({err:"Email or password is required"})
+           return res.status(400).json({err:"Email or password is required"})
           }
 
-        const user=await User.findOne(email);
+        const user=await User.findOne({email});
+
         if(!user){
-           return res.status(401).res.json({err:"Invalid credentials"})
+           return res.status(401).json({err:"Invalid credentials"})
           }
         if(role_type==="admin" && user.role!="ADMIN"){
-            return res.status(401).res.json({err:"Not authorized as admin"})
+            return res.status(401).json({err:"Not authorized as admin"})
         }
         if(role_type==="employee" && user.role!="EMPLOYEE"){
-            return res.status(401).res.json({err:"Not authorized as employee"})
+            return res.status(401).json({err:"Not authorized as employee"})
         }
 
         const isValid= await bcrypt.compare(password,user.password);
 
         if(!isValid){
-            return res.status(401).res.json({err:"Invalid credentials"})
+            return res.status(401).json({err:"Invalid credentials"})
         }
 
         const payload={
@@ -73,7 +74,7 @@ export const changePassword=async(req,res)=>{
         const isValid= await bcrypt.compare(currentPassword,user.password);
 
         if(!isValid){
-            return res.status(400).res.json({err:"current Password is incorrect"})
+            return res.status(400).json({err:"current Password is incorrect"})
         }
         
         const hashed=await bcrypt.hash(newPassword,10);

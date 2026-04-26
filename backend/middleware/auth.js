@@ -6,14 +6,14 @@ export const protect=(req,res,next)=>{
         if(!authHeader || !authHeader.startsWith("Bearer ")){
             return res.status(401).json({err:"Unauthorized"})
         }
-        const token=authHeader.split("")[1];
+        const token=authHeader.split(" ")[1];
         const session=jwt.verify(token,process.env.SECRET_KEY)
 
         if(!session){
             return res.status(401).json({err:"Unauthorized"})
         }
 
-        res.session=session;
+        req.session=session;
         next();
 
       }

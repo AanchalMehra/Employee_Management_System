@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { XIcon, Loader2, FileText, Calendar, AlignLeft, Send } from 'lucide-react';
+import api from '../../api/axios';
+import toast from "react-hot-toast"
+
 
 function ApplyLeaveModal({ open, onClose, onSuccess }) {
     const [loading, setLoading] = useState(false);
@@ -18,16 +21,28 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        try {
-            if (onSuccess) {
-                await onSuccess(formData);
+        const formData=new FormData(e.currentTarget)
+        const data=Object.fromEntries(formData.entries())
+        try{
+             await api.post("/leave",data);
+             onSuccess();
+             onClose(); 
+             setFormData({
+            type: 'ANNUAL',
+            startDate: '',
+            endDate: '',
+            reason: ''
+         });
+       
             }
-            onClose(); // Triggers modal closure
-        } catch (error) {
-            console.error("Submission failed", error);
-        } finally {
-            setLoading(false);
+        catch(err){
+            console.log("ERROR:", err.response?.data);
+            toast.error(err?.response?.data?.err|| err.message)
+
         }
+        finally {
+        setLoading(false); 
+    }
     };
 
     if (!open) return null;
@@ -45,7 +60,7 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
                     <XIcon className="w-5 h-5" />
                 </button>
 
-                <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
+                <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
                     {/* Header */}
                     <div className="pr-6">
                         <h2 className="text-xl sm:text-2xl font-black text-[#1e293b] leading-tight">Apply for Leave</h2>
@@ -61,11 +76,12 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
                                 <select 
                                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-700 font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
                                     value={formData.type}
+                                    name="type"
                                     onChange={(e) => setFormData({...formData, type: e.target.value})}
                                 >
-                                    <option>Annual Leave</option>
-                                    <option>Sick Leave</option>
-                                    <option>Casual Leave</option>
+                                    <option value="ANNUAL">Annual Leave</option>
+                                    <option value="SICK">Sick Leave</option>
+                                    <option value="CASUAL">Casual Leave</option>
                                 </select>
                             </div>
                         </div>
@@ -73,11 +89,12 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
                         {/* Duration */}
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duration</label>
-                            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="relative">
                                     <Calendar className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                                     <input 
                                         type="date" 
+                                        name="startDate"
                                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-9 sm:pl-10 pr-1 py-3 text-[10px] sm:text-[11px] text-slate-700 font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                         onChange={(e) => setFormData({...formData, startDate: e.target.value})}
                                     />
@@ -86,6 +103,7 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
                                     <Calendar className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                                     <input 
                                         type="date" 
+                                        name="endDate"
                                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-9 sm:pl-10 pr-1 py-3 text-[10px] sm:text-[11px] text-slate-700 font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                         onChange={(e) => setFormData({...formData, endDate: e.target.value})}
                                     />
@@ -100,6 +118,7 @@ function ApplyLeaveModal({ open, onClose, onSuccess }) {
                                 <AlignLeft className="absolute left-4 top-4 w-4 h-4 text-slate-400 pointer-events-none" />
                                 <textarea 
                                     placeholder="Reason..."
+                                     name="reason"
                                     rows="2"
                                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-700 font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
                                     onChange={(e) => setFormData({...formData, reason: e.target.value})}

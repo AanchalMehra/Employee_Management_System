@@ -4,23 +4,37 @@ import Loading from "../Components/Loading"
 import { PalmtreeIcon, PlusIcon, ThermometerIcon, UmbrellaIcon } from "lucide-react";
 import LeaveHistory from "../Components/leave/LeaveHistory";
 import ApplyLeaveModal from "../Components/leave/ApplyLeaveModal";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
+import api from "../api/axios";
+
 function Leave(){
     const [leaves,setLeaves]=useState([])
     const [loading,setLoading]=useState(true);
     const [showModal,setShowModal]=useState(false);
     const [isDeleted,setIsDeleted]=useState(false);
+    const {user}=useAuth();
 
-    const isAdmin=false;
+    const isAdmin=user?.role==="ADMIN";
 
-    const fetchLeaves=useCallback(()=>{
-     setLeaves(dummyLeaveData);
-     setTimeout(()=>{
-        setLoading(false)
-     }
-     ,1000)
+    const fetchLeaves=useCallback(async()=>{
+        try{
+          const res=await api.get('/leave');
+          setLeaves(res.data.data ||[]);
+          if(res.data.data.employee?.isDeleted){
+            setIsDeleted(true)
+          }
+        }
+        catch(err){
+          toast.error(err?.response?.data?.error || err.message)
+
+        }
+        finally{
+          setLoading(false)
+        }
     },[])
 
-    useEffect(()=>fetchLeaves(),[fetchLeaves])
+    useEffect(()=>{fetchLeaves()},[fetchLeaves])
     if(loading) return <Loading/>
     const approvedLeaves=leaves.filter((l)=>l.status==="APPROVED")
     const sickCount=approvedLeaves.filter((l)=>l.type==="SICK").length;

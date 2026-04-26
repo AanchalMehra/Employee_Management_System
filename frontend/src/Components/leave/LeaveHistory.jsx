@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import { Loader2, Check, XIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import api from '../../api/axios';
+import toast from 'react-hot-toast';
 
 function LeaveHistory({ leaves = [], isAdmin, onUpdate }) {
   const [processing, setProcessing] = useState(null);
 
-  const handleStatusUpdate = async (id, newStatus) => {
+  const handleStatusUpdate = async (id, status) => {
     setProcessing(id);
-    
-    // Simulate an API call delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
     try {
-      if (onUpdate) {
-        // In a real app, this calls your API. 
-        // For your dummy data, ensure your parent 'onUpdate' handles the state change.
-        await onUpdate(id, newStatus);
+      await api.patch(`/leave/${id}`,{status})
+      onUpdate();
       }
-    } catch (error) {
-      console.error("Failed to update status", error);
+    catch (err) {
+       toast.error(err?.response?.data?.err|| err.message)
     } finally {
       setProcessing(null);
     }

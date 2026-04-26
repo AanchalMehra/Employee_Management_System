@@ -1,22 +1,23 @@
 import { IndianRupeeIcon,CalendarCheck,ArrowRightIcon, FileTextIcon} from "lucide-react";
 import { Link } from "react-router-dom";
 function EmployeeDashboard({data}){
-    const firstName = data.name.split(" ")[0];
+   if (!data) return null;
+    const firstName = data?.firstName || data?.employee?.firstName || "User";
 
 const cards=[{
     title: "Latest Payslip",
     icon: <IndianRupeeIcon size={20} />,
-    value: data.payslips[0].amount
+   value: data.payslips?.[0]?.amount || 0
 },
 {
     title: "Attendance",
     icon: <CalendarCheck size={20} />,
-    value: data.attendance.present,
+    value: data.attendance?.present|| 0
 },
 {
     title: "Pending Leaves",
     icon: <FileTextIcon size={20} />,
-    value: data.attendance.leave,
+    value: data.attendance?.leave|| 0
 }
 ]
 

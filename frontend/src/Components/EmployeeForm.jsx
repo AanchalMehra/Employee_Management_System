@@ -1,308 +1,283 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { departments } from "../Alldata";
+import toast from "react-hot-toast";
+import api from "../api/axios.js";
 
-function EmployeeForm({initialData, onCancel,onSave}){
+function EmployeeForm({ initialData, onCancel, onSave }) {
+  const [loading, setLoading] = useState(false);
+  const isEditMode = !!initialData;
 
-const [formData, setFormData] = useState({
-  firstName: "",
-  lastName: "",
-  phone: "",
-  joinDate: "",
-  bio: "",
+  const emptyForm = {
+    firstName: "",
+    lastName: "",
+    phone: "",
+    joinDate: "",
+    bio: "",
+    departments: "",
+    position: "",
+    basicSalary: 0,
+    allowances: 0,
+    deductions: 0,
+    employmentStatus: "ACTIVE",
+    email: "",
+    password: "",
+    role: "EMPLOYEE",
+  };
 
-  
-  department: "",
-  position: "",
-  basicSalary: "",
-  allowances: "",
-  deductions: "",
-  status: "Active",
+  const [formData, setFormData] = useState(emptyForm);
 
-  email: "",
-  password: "",
-  role: "Employee"
-});
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        firstName: initialData.firstName || "",
+        lastName: initialData.lastName || "",
+        phone: initialData.phone || "",
+        joinDate: initialData.joinDate ? initialData.joinDate.split("T")[0] : "",
+        bio: initialData.bio || "",
+        departments: initialData.departments || "",
+        position: initialData.position || "",
+        basicSalary: initialData.basicSalary || 0,
+        allowances: initialData.allowances || 0,
+        deductions: initialData.deductions || 0,
+        employmentStatus: initialData.employmentStatus || "ACTIVE",
+        email: initialData.email || initialData.user?.email || "",
+        role: initialData.user?.role || "EMPLOYEE",
+        password: "",
+      });
+    } else {
+      setFormData(emptyForm);
+    }
+  }, [initialData]);
 
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-const emptyForm = {
-  firstName: "",
-  lastName: "",
-  phone: "",
-  joinDate: "",
-  bio: "",
-
-  department: "",
-  position: "",
-  basicSalary: "",
-  allowances: "",
-  deductions: "",
-  status: "Active",
-
-  email: "",
-  password: "",
-  role: "Employee"
-};
-
-useEffect(() => {
-  if (initialData) {
-    setFormData({ ...emptyForm, ...initialData }); // 🔥 merge
-  } else {
-    setFormData(emptyForm);
-  }
-}, [initialData]);
-    return(
-        <> 
-     <form
-  onSubmit={(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.phone ||
-      !formData.joinDate
-    ) {
-      alert("Please fill all required fields");
-      return;
+    try {
+      const payload = {
+        ...formData,
+        basicSalary: Number(formData.basicSalary) || 0,
+        allowances: Number(formData.allowances) || 0,
+        deductions: Number(formData.deductions) || 0,
+      };
+
+      if (!payload.password) delete payload.password;
+
+      const targetId = initialData?._id || initialData?.id;
+      const url = isEditMode ? `/employees/${targetId}` : "/employees";
+
+      await api[isEditMode ? "put" : "post"](url, payload);
+
+      toast.success(isEditMode ? "Employee updated" : "Employee created");
+      onSave?.();
+    } catch (err) {
+      toast.error(err?.response?.data?.err || "Error occurred");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    onSave(formData);
-  }}
-  className="p-5 flex flex-col gap-4 max-h-[75vh] overflow-y-auto text-sm"
->
-
-  {/* First Name */}
-
-   <p className="text-xs font-semibold text-gray-400 uppercase mt-4">
-  Personal Details
-</p>
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-slate-600">
-      First Name *
-    </label>
-    <input
-      type="text"
-      autoFocus 
-      value={formData.firstName}
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, firstName: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-      placeholder="Enter first name"
-    />
-  </div>
-
-  {/* Last Name */}
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-slate-600">
-      Last Name *
-    </label>
-    <input
-      type="text"
-      value={formData.lastName}
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, lastName: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-      placeholder="Enter last name"
-    />
-  </div>
-
-  {/* Phone */}
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-slate-600">
-      Phone Number *
-    </label>
-    <input
-      type="text"
-      value={formData.phone}
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, phone: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-      placeholder="Enter phone number"
-    />
-  </div>
-
-  {/* Join Date */}
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-slate-600">
-      Join Date *
-    </label>
-    <input
-      type="date"
-      value={formData.joinDate}
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, joinDate: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-    />
-  </div>
-
-  {/* Bio */}
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-slate-600">
-      Bio (Optional)
-    </label>
-    <textarea
-      value={formData.bio}
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, bio: e.target.value }))
-      }
-      rows={3}
-      className="border border-slate-200 rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-      placeholder="Write something about the employee..."
-    />
-  </div>
-
-  <p className="text-xs font-semibold text-gray-400 uppercase mt-4">
-  Employment Details
-</p>
-
-<div className="grid grid-cols-2 gap-3">
-  {/* Department */}
-  <select
-    value={formData.department}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, department: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  >
-    <option value="">Select Department</option>
-    {departments.map(dep => (
-      <option key={dep}>{dep}</option>
-    ))}
-  </select>
-
-  {/* Position */}
-  <input
-    type="text"
-    placeholder="Position"
-    value={formData.position}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, position: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  />
-
-  {/* Salary */}
-  <input
-    type="number"
-    placeholder="Basic Salary"
-    value={formData.basicSalary}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, basicSalary: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  />
-
-  <input
-    type="number"
-    placeholder="Allowances"
-    value={formData.allowances}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, allowances: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  />
-
-  <input
-    type="number"
-    placeholder="Deductions"
-    value={formData.deductions}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, deductions: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  />
-
-  {/* Status */}
-  <select
-    value={formData.status}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, status: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  >
-    <option>Active</option>
-    <option>Inactive</option>
-  </select>
-</div>
-
-<p className="text-xs font-semibold text-gray-400 uppercase mt-4">
-  Account Setup
-</p>
-
-<div className="grid grid-cols-2 gap-3">
-  {/* Email */}
-  <input
-    type="email"
-    placeholder="Work Email"
-    value={formData.email}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, email: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  />
-
-  {/* Password */}
-  {!initialData ? (
-    <input
-      type="password"
-      placeholder="Temporary Password"
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, password: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm"
-    />
-  ) : (
-    <input
-      type="password"
-      placeholder="Change Password (optional)"
-      onChange={(e) =>
-        setFormData(prev => ({ ...prev, password: e.target.value }))
-      }
-      className="border border-slate-200 rounded-lg p-2 text-sm"
-    />
-  )}
-
-  {/* Role */}
-  <select
-    value={formData.role}
-    onChange={(e) =>
-      setFormData(prev => ({ ...prev, role: e.target.value }))
-    }
-    className="border border-slate-200 rounded-lg p-2 text-sm"
-  >
-    <option>Employee</option>
-    <option>Admin</option>
-  </select>
-</div>
-
-  {/* Buttons */}
-  <div className="flex justify-end gap-2 mt-2">
-    <button
-      type="button"
-      onClick={onCancel}
-      className="px-4 py-2 bg-gray-200 rounded-lg text-sm"
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 sm:p-5 flex flex-col gap-4 max-h-[75vh] overflow-y-auto text-sm"
     >
-      Cancel
-    </button>
+      <p className="text-xs font-semibold text-gray-400 uppercase mt-2 sm:mt-4">
+        Personal Details
+      </p>
 
-    <button
-      type="submit"
-      className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm"
-    >
-     {initialData ? "Update Employee" : "Create Employee"}
-    </button>
-  </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-slate-600">First Name *</label>
+        <input
+          name="firstName"
+          placeholder="John"
+          value={formData.firstName}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
 
-</form>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-slate-600">Last Name *</label>
+        <input
+          name="lastName"
+          placeholder="Doe"
+          value={formData.lastName}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
 
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-slate-600">Phone *</label>
+        <input
+          name="phone"
+          placeholder="+1 234 567 890"
+          value={formData.phone}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
 
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-slate-600">Join Date *</label>
+        <input
+          name="joinDate"
+          type="date"
+          value={formData.joinDate}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
 
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-slate-600">Bio</label>
+        <textarea
+          name="bio"
+          placeholder="Brief professional summary..."
+          value={formData.bio}
+          onChange={handleChange}
+          rows={3}
+          className="border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+        />
+      </div>
 
-        </>
-    )
+      <p className="text-xs font-semibold text-gray-400 uppercase mt-3 sm:mt-4">
+        Employment Details
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <select
+          name="departments"
+          value={formData.departments}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5"
+        >
+          <option value="">Select Department</option>
+          {departments.map((dep) => (
+            <option key={dep} value={dep}>{dep}</option>
+          ))}
+        </select>
+
+        <input
+          name="position"
+          placeholder="e.g. Software Engineer"
+          value={formData.position}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5"
+        />
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase">Basic Salary</label>
+          <input
+            name="basicSalary"
+            type="number"
+            min="0"
+            placeholder="e.g. 50000"
+            value={formData.basicSalary}
+            onChange={handleChange}
+            className="border border-slate-300 rounded-lg p-2.5"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase">Allowances</label>
+          <input
+            name="allowances"
+            type="number"
+            min="0"
+            placeholder="e.g. 2000"
+            value={formData.allowances}
+            onChange={handleChange}
+            className="border border-slate-300 rounded-lg p-2.5"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase">Deductions</label>
+          <input
+            name="deductions"
+            type="number"
+            min="0"
+            placeholder="e.g. 500"
+            value={formData.deductions}
+            onChange={handleChange}
+            className="border border-slate-300 rounded-lg p-2.5"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase">Status</label>
+          <select
+            name="employmentStatus"
+            value={formData.employmentStatus}
+            onChange={handleChange}
+            className="border border-slate-300 rounded-lg p-2.5"
+          >
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <p className="text-xs font-semibold text-gray-400 uppercase mt-3 sm:mt-4">
+        Account Setup
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <input
+          name="email"
+          placeholder="work@company.com"
+          value={formData.email}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5"
+        />
+
+        <input
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          type="password"
+          placeholder={isEditMode ? "Change Password" : "Password"}
+          className="border border-slate-300 rounded-lg p-2.5"
+        />
+
+        <select
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          className="border border-slate-300 rounded-lg p-2.5"
+        >
+          <option value="EMPLOYEE">Employee</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-end gap-2 mt-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 bg-gray-200 rounded-lg text-sm"
+        >
+          Cancel
+        </button>
+
+        <button
+          disabled={loading}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm"
+        >
+          {loading ? "Saving..." : isEditMode ? "Update Employee" : "Create Employee"}
+        </button>
+      </div>
+    </form>
+  );
 }
+
 export default EmployeeForm;

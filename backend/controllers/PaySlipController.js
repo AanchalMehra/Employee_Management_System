@@ -9,7 +9,7 @@ export const createPayslip=async(req,res)=>{
     const {employeeId,month,year,basicSalary,
         allowances,deductions}= req.body;
     if(!employeeId || !month || !year|| !basicSalary){
-        res.status(400).json({err:"Missing fields"})
+       return res.status(400).json({err:"Missing fields"})
     }
     const netSalary= Number(basicSalary) + Number (allowances||0) - Number(deductions|| 0);
     const payslip=await paySlip.create({
@@ -36,9 +36,14 @@ export const getPayslip=async(req,res)=>{
 
     try{
         const session=req.session;
+        if (!session || !session.role) {
+  return res.status(401).json({ err: "Unauthorized" });
+}
         const isAdmin=session.role==="ADMIN";
         if(isAdmin){
-            const payslip= (await paySlip.find().populate("employeeId")).sort({createdAt:-1});
+            const payslip= await paySlip.find()
+            .populate("employeeId")
+            .sort({createdAt:-1});
             const data=payslip.map((p)=>{
                 const obj=p.toObject();
                 return {
@@ -60,7 +65,7 @@ export const getPayslip=async(req,res)=>{
                 return res.status(404).json({err:"Employee not found"});
             }
             const payslips=await paySlip.find({employeeId:employee._id})
-            .sort({createAt:-1});
+            .sort({createdAt:-1});
             return res.json({data:payslips})
         }
 
@@ -82,8 +87,8 @@ export const getPayslipId=async(req,res)=>{
 
         const result={
             ...payslips,
-            id:payslip._id.toString(),
-            employee:payslip.employeeId
+            id:payslips._id.toString(),
+            employee:payslips.employeeId
 
         }
 
@@ -91,7 +96,7 @@ export const getPayslipId=async(req,res)=>{
         
     }
     catch(err){
-        return res.status(500).json({err:"Failed to user Payslip"})
+        return res.status(500).json({err:"Failed to fetch User Payslip"})
 
     }
 

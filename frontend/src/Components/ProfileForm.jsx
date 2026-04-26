@@ -1,5 +1,6 @@
 import { User, AlertCircle, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
+import api from '../api/axios';
 
 function ProfileForm({ initialData, onSuccess }) {
     const [loading, setLoading] = useState(false);
@@ -10,15 +11,24 @@ function ProfileForm({ initialData, onSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (isDeleted) return;
         setLoading(true);
         setError("");
         setMessage("");
-        
-        setTimeout(() => {
+        const formData=new FormData(e.currentTarget)
+        try{
+            await api.post("/profile",formData);
+            setMessage("Profile updated succesfully")
+            onSuccess?.();
+
+        }
+        catch(err){
+            setError(err?.response?.data?.err ||err.message)
+
+        }
+        finally{
             setLoading(false);
-            setMessage("Profile updated successfully");
-        }, 1000);
+        }
+
     };
 
     // Standardized styles for full-width look
@@ -81,7 +91,7 @@ function ProfileForm({ initialData, onSuccess }) {
                         <label className='block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1'>Position</label>
                         <input 
                             name="position"
-                            disabled={isDeleted}
+                            disabled
                             defaultValue={initialData?.position}
                             placeholder="e.g. Senior Developer"
                             className={`${inputStyle} ${isDeleted ? disabledStyle : ""}`} 

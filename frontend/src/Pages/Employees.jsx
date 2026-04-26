@@ -1,9 +1,11 @@
 import { Plus, Search, XIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { employeeData, departments } from "../Alldata";
+import { departments } from "../Alldata";
 import Loading from "../Components/Loading";
 import EmployeeCard from "../Components/EmployeeCard";
 import EmployeeForm from "../Components/EmployeeForm";
+import api from "../api/axios";
+import toast from "react-hot-toast";
 
 function Employees() {
   const [employees, setEmployees] = useState([]);
@@ -13,35 +15,39 @@ function Employees() {
   const [editEmployee, setEditEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("employees", JSON.stringify(employees));
-  }, [employees]);
-
-  const handleDelete = (empToDelete) => {
-    setEmployees((prev) => prev.filter((emp) => emp !== empToDelete));
-  };
-
-  
   const fetchEmployees = useCallback(async () => {
-    setLoading(true);
-
-    const stored = JSON.parse(localStorage.getItem("employees"));
-
-    const data =
-      stored && stored.length > 0 ? stored : employeeData;
-
-    setEmployees(
-      data.filter((emp) =>
-        selectDept ? emp.department === selectDept : true
-      )
-    );
-
-    setTimeout(() => setLoading(false), 500);
+    try {
+      setLoading(true);
+      const url = selectDept ? `/employees?departments=${selectDept}` : "/employees";
+      const res = await api.get(url);
+      setEmployees(res.data);
+    } catch (err) {
+      console.error("failed to fetch data", err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [selectDept]);
 
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
+
+  const handleDelete = async (employee) => {
+    if (employee.isDeleted || employee.employmentStatus === "INACTIVE") return;
+    if (!confirm("Are you sure you want to mark this employee as deleted?")) return;
+    
+    try {
+      const empId = employee._id ;
+      await api.delete(`/employees/${empId}`);
+      setTimeout(() => {
+        fetchEmployees(); 
+      }, 300);
+      toast.success("Employee marked as deleted");
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast.error(err?.response?.data?.err || "Failed to delete");
+    }
+  };
 
   const filtered = employees.filter((emp) =>
     `${emp.firstName} ${emp.lastName} ${emp.position}`
@@ -54,60 +60,28 @@ function Employees() {
     setIsModalOpen(true);
   };
 
+
+  console.log("Current List Count:", filtered.length);
+console.log("Deleted items in list:", filtered.filter(e => e.isDeleted).length);
   return (
     <div className="animate-fade-in">
-
       {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
-
           <div
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
             onClick={() => setIsModalOpen(false)}
           />
-
           <div className="relative bg-white w-full max-w-lg rounded-[2rem] shadow-2xl border overflow-hidden z-[1000]">
-
             <EmployeeForm
               initialData={editEmployee}
               onCancel={() => setIsModalOpen(false)}
-              onSave={(data) => {
-                const stored =
-                  JSON.parse(localStorage.getItem("employees")) ||
-                  employeeData;
-
-                let updated;
-
-                if (editEmployee) {
-                  updated = stored.map((emp) =>
-                    emp.employeeId === editEmployee.employeeId
-                      ? { ...emp, ...data }
-                      : emp
-                  );
-                } else {
-                  updated = [
-                    ...stored,
-                    {
-                      ...data,
-                      employeeId: "EMP" + Date.now(),
-                      attendance: { present: 0, leave: 0 },
-                      leaves: [],
-                      payslips: [],
-                    },
-                  ];
-                }
-
-                localStorage.setItem(
-                  "employees",
-                  JSON.stringify(updated)
-                );
-
+              onSave={() => {
                 setEditEmployee(null);
                 setIsModalOpen(false);
-                fetchEmployees();
+                fetchEmployees(); 
               }}
             />
-
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-black"
@@ -122,11 +96,8 @@ function Employees() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="font-semibold text-2xl">Employees</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Manage your team members
-          </p>
+          <p className="text-slate-400 text-sm mt-1">Manage your team members</p>
         </div>
-
         <button
           onClick={handleAdd}
           className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg transition-all"
@@ -135,7 +106,7 @@ function Employees() {
         </button>
       </div>
 
-      {/* SEARCH */}
+      {/* SEARCH/FILTER */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
@@ -147,7 +118,6 @@ function Employees() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-
         <select
           value={selectDept}
           onChange={(e) => setselectDept(e.target.value)}
@@ -167,9 +137,9 @@ function Employees() {
         <p className="text-center text-gray-500">No employees found</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filtered.map((emp, index) => (
+          {filtered.map((emp) => (
             <EmployeeCard
-              key={index}
+              key={emp._id || emp.id}
               employee={emp}
               onDelete={handleDelete}
               onEdit={(e) => {

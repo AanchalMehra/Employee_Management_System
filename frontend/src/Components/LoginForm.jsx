@@ -2,8 +2,10 @@ import { ArrowLeft, Loader2Icon } from "lucide-react";
 import { EyeIcon ,EyeOffIcon} from "lucide-react";
 
 import LoginLeftSide from "./LoginLeftSide";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 function LoginForm({ role, title, subtitle }) {
   const [email, setEmail] = useState("");
@@ -12,90 +14,100 @@ function LoginForm({ role, title, subtitle }) {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState("");
 
-  const handleSubmit = (e) => {
+  const {login}=useAuth()
+  const navigate=useNavigate();
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+    try{
+      await login(email,password,role)
+      navigate("/dashboard")
+    }
+    catch(err){
+      toast.error(err.response?.data?.err || err.message ||"Login Failed");
+
+    }
+    finally{
+      setLoading(false);
+    }
 
   };
 
   return (
     <div className="flex h-screen bg-white">
-
       
       <LoginLeftSide />
 
-      {/* RIGHT SIDE */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-gray-50 p-12">
+      {/* RIGHT SIDE - Clean White Theme with Navy Accents */}
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
           
           <Link to="/login">
-            <button className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition mb-8 group">
+            <button className="flex items-center gap-2 text-slate-400 hover:text-[#0f172a] transition-all mb-10 group">
               <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium">Back to portal</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Back to portal</span>
             </button>
           </Link>
 
-          <h1 className="text-3xl font-bold text-gray-900 capitalize">{title}</h1>
-          <p className="text-gray-500 mt-2 mb-8">{subtitle}</p>
+          <h1 className="text-3xl font-black text-[#0f172a] capitalize tracking-tight">{title}</h1>
+          <p className="text-slate-500 mt-2 mb-10 text-lg">{subtitle}</p>
 
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             {error&&(
-        <div className="text-xs font-medium text-red-500 mt-1 animate-shake">
-            {error}
-        </div>
-      )} 
+              <div className="text-xs font-medium text-red-500 bg-red-50 p-3 rounded-lg border border-red-100 animate-shake">
+                  {error}
+              </div>
+            )} 
 
-            <div className="flex flex-col gap-1.5">
-              
-              <label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@gmail.com"
+                placeholder="name@company.com"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition"
+                className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0f172a] focus:ring-4 focus:ring-slate-100 outline-none transition-all"
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-  <label htmlFor="password" className="text-sm font-semibold text-gray-700">
-    Password
-  </label>
-  
-  {/* Container must be relative */}
-  <div className="relative">
-    <input 
-      type={showPassword ? "text" : "password"}
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      placeholder="••••••••••••••••"
-      required
-      className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition"
-    />
-    
-    <button 
-      type="button"
-      onClick={() => setShowPassword(!showPassword)}
-      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition"
-    >
-      {showPassword ? <EyeOffIcon size={18}/> : <EyeIcon size={18}/>}
-    </button>
-  </div>
-</div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+                Password
+              </label>
+              <div className="relative">
+                <input 
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  required
+className="w-full px-4 py-3.5 pr-12 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0f172a] focus:ring-4 focus:ring-slate-100 outline-none transition-all [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-password-toggle-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"                />
+                
+                <button 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#0f172a] transition"
+                >
+                  {showPassword ? <EyeOffIcon size={18}/> : <EyeIcon size={18}/>}
+                </button>
+              </div>
+            </div>
+
             <button type="submit"
-            disabled={loading} 
-            className="mt-4 w-full bg-purple-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 active:scale-[0.98] transition">
-              Sign In
+              disabled={loading} 
+              className="mt-4 w-full bg-[#0f172a] text-white py-4 rounded-xl font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
               {loading &&(
-                <Loader2Icon className="animate-spin h-4 w-4 mr-2"/>
+                <Loader2Icon className="animate-spin h-5 w-5"/>
               )}
+              Sign In
             </button>
           </form>
           
         </div>
       </div>
-
-      
     </div>
   );
 }

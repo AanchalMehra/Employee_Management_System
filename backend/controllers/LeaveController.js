@@ -47,60 +47,62 @@ export const createLeave=async(req,res)=>{
 
     }
     catch(err){
-             return res.status(500).json({err:"Failed to create Leave Applicaton"})
+       console.error("CREATE LEAVE ERROR:", err);
+       return res.status(500).json({err:"Failed to create Leave Applicaton"})
     }
 }
 
 //GET Leave
 // Get /api/leaves
 
-export const getLeave=async(req,res)=>{
-    try{
-        const session=req.session;
-        isAdmin= session.role==="ADMIN";
-        if(isAdmin){
-            const status=req.query.status;
-            const where=status?{status} :{};
-            const leaves= await LeaveApplication.find(where)
-            .populate("employeeId")
-            .sort ({createAt:-1});
+/* ================= GET Leave ================= */
+export const getLeave = async (req, res) => {
+  try {
+    const session = req.session;
+    
+    const isAdmin = session.role === "ADMIN";
 
-            const data=leaves.map((l)=>{
-                const obj =l.toObject();
-                return{
-                    ...obj,
-                    id:obj._id.toString(),
-                    employee:obj.employeeId,
-                    employeeId:obj.employeeId?._id.toString(),
-                }
-            })
-            return res.json({data})
-        }
-        else{
-            const employee=await Employee.findOne({
-                userId:session.userId,
-            }).lean();
+    if (isAdmin) {
+      const status = req.query.status;
+      const where = status ? { status } : {};
+      
+      const leaves = await LeaveApplication.find(where)
+        .populate("employeeId")
+        .sort({ createdAt: -1 });
 
-            if(!employee) return res.status(400).json({err:"Employee not found"})
+      const data = leaves.map((l) => {
+        const obj = l.toObject();
+        return {
+          ...obj,
+          id: obj._id.toString(),
+          employee: obj.employeeId,
+          employeeId: obj.employeeId?._id.toString() || "",
+        };
+      });
+      return res.json({ data });
+    } else {
+      const employee = await Employee.findOne({
+        userId: session.userId,
+      }).lean();
 
-             const leaves= await LeaveApplication.find({
-                employeeId:employee._id
-             })
-            .sort ({createAt:-1});
+      if (!employee) return res.status(404).json({ err: "Employee not found" });
 
-            return res.json({
-                data:leaves,
-                employee:{...employee,id:employee._id.toString()}
-            })
-        }
+      const leaves = await LeaveApplication.find({
+        employeeId: employee._id
+      })
+      .sort({ createdAt: -1 });
 
+      
+      return res.json({
+        data: leaves.map(l => ({ ...l.toObject(), id: l._id.toString() })),
+        employee: { ...employee, id: employee._id.toString() }
+      });
     }
-    catch(err){
-            return res.status(500).json({err:"Failed to fetch Leave Applicatons"})
-
-    }
-}
-
+  } catch (err) {
+    console.error("GET LEAVE ERROR:", err); // Log the actual error for debugging
+    return res.status(500).json({ err: "Failed to fetch Leave Applications" });
+  }
+};
 
 //Update Leave status
 // PATCH /api/leaves/:id
