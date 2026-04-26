@@ -23,7 +23,7 @@ export const CheckInButton = ({todayRecord,onAction}) => {
         
     }
 
-  if(todayRecord?.checkOutTime){
+  if(todayRecord?.checkOut){
             return(
                 <div>
                     <h3>Work day completed</h3>
