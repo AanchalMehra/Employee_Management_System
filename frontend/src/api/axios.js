@@ -5,7 +5,8 @@ const base = (import.meta.env.VITE_BASE_URL || "http://localhost:4000")
   .replace(/\/+$/, "");   
 
 const api = axios.create({
-  baseURL: base + "/api"
+  baseURL: base + "/api",
+  withCredentials: true,
 });
 //auth token for all api request
 api.interceptors.request.use((config)=>{
