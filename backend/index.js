@@ -28,11 +28,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://employee-management-system-z8hr.vercel.app"
+        "https://employee-management-system-portal.vercel.app"
     ],
     credentials: true
 }));
-
 
 app.get("/", (req, res) => {
     res.send("Server is running");
