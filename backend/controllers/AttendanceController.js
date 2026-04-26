@@ -7,10 +7,9 @@ import Employee from "../models/EmployeeModel.js";
 
 export const clockInOut = async (req, res) => {
   try {
-    const session = req.session;
+    const user = req.user;
 
-    const employee = await Employee.findOne({ userId: session.userId });
-
+    const employee = await Employee.findOne({ userId: user.userId });
     if (!employee) {
       return res.status(404).json({ err: "Employee not found" });
     }
@@ -119,9 +118,9 @@ export const clockInOut = async (req, res) => {
 
 export const getAttendance = async (req, res) => {
   try {
-    const session = req.session;
+   const user = req.user;
 
-    const employee = await Employee.findOne({ userId: session.userId });
+    const employee = await Employee.findOne({ userId: user.userId });
 
     if (!employee) {
       return res.status(404).json({ err: "Employee not found" });

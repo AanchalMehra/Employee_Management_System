@@ -5,8 +5,8 @@ import PaySlip from "../models/PaySlips.js"
 import { departments } from "../Department.js";
 export const getDashboard=async(req,res)=>{
     try{
-          const session=req.session;
-          if(session.role==="ADMIN"){
+          const user = req.user;
+          if(user.role === "ADMIN"){
             const [totalEmployees,totalAttendance,pendingLeaves]=await Promise.all(
                 [
                     Employee.countDocuments({isDeleted:{$ne:true}}),
@@ -34,7 +34,7 @@ export const getDashboard=async(req,res)=>{
           
           else{
               const employee=await Employee.findOne({
-                userId:session.userId
+                userId: user.userId
               }).lean();
 
               if(!employee) return res.status(404).json({err:"Employee Not Found"});

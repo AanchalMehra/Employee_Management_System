@@ -5,14 +5,14 @@ import Employee from "../models/EmployeeModel.js";
 
 export const getProfile= async(req,res)=>{
     try{
-         const session=req.session;
-         const employee= await Employee.findOne({userId:session.userId})
+         const user=req.user;
+         const employee= await Employee.findOne({userId:user.userId})
          if(!employee){
             return res.json(
                 {
                     firstName:"Admin",
                     lastName:"",
-                    email:session.email,
+                    email:user.email,
 
                 }
             )
@@ -30,8 +30,8 @@ export const getProfile= async(req,res)=>{
 export const updateProfile= async(req,res)=>{
     try{
 
-        const session=req.session;
-         const employee= await Employee.findOne({userId:session.userId})
+        const user=req.user;
+         const employee= await Employee.findOne({userId:user.userId})
          if(!employee){
                 return res.status(500).json({err:"Employee not found"})
 

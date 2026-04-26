@@ -35,11 +35,11 @@ export const createPayslip=async(req,res)=>{
 export const getPayslip=async(req,res)=>{
 
     try{
-        const session=req.session;
-        if (!session || !session.role) {
+        const user=req.user;
+        if (!user || !user.role) {
   return res.status(401).json({ err: "Unauthorized" });
 }
-        const isAdmin=session.role==="ADMIN";
+        const isAdmin=user.role==="ADMIN";
         if(isAdmin){
             const payslip= await paySlip.find()
             .populate("employeeId")
@@ -50,7 +50,7 @@ export const getPayslip=async(req,res)=>{
                     ...obj,
                     id:obj._id.toString(),
                     employee:obj.employeeId,
-                    employeeId:obj.employeeId?._id?.toString(),
+                    employeeId:obj.employeeId?._id?.toString()|| "",
 
 
 
@@ -60,7 +60,7 @@ export const getPayslip=async(req,res)=>{
 
         }
         else{
-            const employee=await Employee.findOne({userId :session.userId})
+            const employee=await Employee.findOne({userId :user.userId})
             if(!employee){
                 return res.status(404).json({err:"Employee not found"});
             }

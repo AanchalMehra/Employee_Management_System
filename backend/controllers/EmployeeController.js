@@ -9,10 +9,9 @@ export const getEmployees = async (req, res) => {
     const dept = req.query.departments;
 
     const where = {};
-    // Fixed: Using 'dept' consistently to prevent ReferenceError
-    if (dept && dept !== "" && dept !== "undefined") {
-      where.departments = dept;
-    }
+    if (dept) {
+  where.departments = dept;
+}
 
     const employees = await Employee.find(where)
       .sort({ createdAt: -1 })
