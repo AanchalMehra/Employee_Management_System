@@ -12,22 +12,30 @@ function Attendance() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-    try {
-      const res = await api.get("/attendance");
-      const records = res.data.data || [];
-      setHistory(records);
+  try {
+    const res = await api.get("/attendance");
+    const records = res.data.data || [];
+    setHistory(records);
 
-      // Use toDateString to ignore time and avoid timezone shifts
-      const todayStr = new Date().toDateString();
-      const record = records.find(r => new Date(r.date).toDateString() === todayStr);
+    const todayStr = new Date().toDateString();
 
-      setTodayRecord(record || null);
-    } catch (err) {
-      toast.error(err?.response?.data?.err || err.message);
-    } finally {
-      setLoading(false);
+    const activeRecord = records.find(r => r.checkIn && !r.checkOut);
+
+    if (activeRecord) {
+      setTodayRecord(activeRecord);
+    } else {
+      const completedToday = records.find(r => 
+        new Date(r.date).toDateString() === todayStr
+      );
+      setTodayRecord(completedToday || null);
     }
-  }, []);
+
+  } catch (err) {
+    toast.error(err?.response?.data?.err || err.message);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     fetchData();
