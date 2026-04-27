@@ -68,7 +68,11 @@ const EmployeeSchema=new mongoose.Schema(
         bio:{
             type:String,
             default:""
-        }
+        },
+        profileImage: {
+        type: String,
+        default: "" // Stores the Cloudinary URL
+    },
 
 
     }, {timestamps:true})

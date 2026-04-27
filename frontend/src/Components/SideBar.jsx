@@ -12,14 +12,22 @@ function SideBar(){
     const {pathname}=useLocation();
     const[userName,setUserName]=useState("")
      const [mobileOpen,setMobileOpen]=useState(true);
-
+     const [userImg, setUserImg] = useState("");
      const{user,loading,logout}=useAuth();
 
-     useEffect(()=>{
-      api.get('/profile').then(({data})=>{
-        if(data.firstName) setUserName(`${data.firstName}  ${data.lastName || " "} `.trim())
-      })
-     },[])
+     useEffect(() => {
+    const fetchProfile = () => {
+        api.get('/profile').then(({ data }) => {
+            if (data.firstName) setUserName(`${data.firstName} ${data.lastName || ""}`.trim());
+            setUserImg(data.profileImage || "");
+        });
+    };
+
+    fetchProfile();
+    window.addEventListener("profileUpdated", fetchProfile);
+    return () => window.removeEventListener("profileUpdated", fetchProfile);
+}, []);
+
     //close the mobile menu when route changes
       useEffect(()=>{
         setMobileOpen(false)
@@ -67,9 +75,22 @@ function SideBar(){
         {userName && (
           <div className="p-3 rounded-lg bg-white/5 border border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-slate-800 ring-1 ring-white/10 flex items-center justify-center shrink-0">
-                <span className="text-white text-xs font-semibold">{userName.charAt(0).toUpperCase()}</span>
-              </div>
+              <div className="w-9 h-9 rounded-lg bg-slate-800 ring-1 ring-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+    {userImg ? (
+                <img 
+                  /* Adding ?t= and a timestamp forces a fresh load */
+                  src={`${userImg}?t=${new Date().getTime()}`} 
+                  alt="Profile" 
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover" 
+                />    
+              ) 
+              : (
+        <span className="text-white text-xs font-semibold">
+            {userName ? userName.charAt(0).toUpperCase() : "?"}
+        </span>
+    )}
+</div>
               <div className="text-[13px] font-medium text-slate-200 truncate">
                 {userName}
                 <p className="text-slate-500 text-[11px]">{role === "ADMIN" ? "Administrator" : "Employee"}</p>

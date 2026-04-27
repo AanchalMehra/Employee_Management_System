@@ -1,11 +1,16 @@
 import { Router } from "express";
+import multer from "multer"; // Import here
 import { protect } from "../middleware/auth.js";
 import { getProfile, updateProfile } from "../controllers/ProfileController.js";
 
-const profileRouter= Router();
+const profileRouter = Router();
 
-profileRouter.get('/',protect,getProfile)
-profileRouter.post('/',protect,updateProfile)
+// Configure local multer for this router
+const upload = multer(); 
 
-export default profileRouter
+profileRouter.get('/', protect, getProfile);
 
+// IMPORTANT: upload.single('profileImage') must be the SECOND argument
+profileRouter.post('/', protect, upload.single('profileImage'), updateProfile);
+
+export default profileRouter;

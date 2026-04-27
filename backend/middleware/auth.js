@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken'
 export const protect=(req,res,next)=>{
       try{
         console.log("AUTH HEADER:", req.headers.authorization);
-        console.log("DECODED USER:", req.user);
 
         const authHeader=req.headers.authorization;
         if(!authHeader || !authHeader.startsWith("Bearer ")){
@@ -16,6 +15,7 @@ export const protect=(req,res,next)=>{
         }
 
         req.user = session;
+        console.log("DECODED USER:", req.user);
         next();
 
       }

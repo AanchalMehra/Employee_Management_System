@@ -50,7 +50,7 @@ function Settings() {
 
       {/* Profile Section - Ensure ProfileForm uses w-full internally */}
       <div className="w-full">
-        {profile && <ProfileForm initialData={profile} onSucess={fetchProfile} />}
+        {profile && <ProfileForm initialData={profile} onSuccess={fetchProfile} />}
       </div>
 
       {/* Security Section */}

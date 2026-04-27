@@ -2,8 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import dbConnection from "./config/db.js";
+import dbConnection from "./config/Db.js";
 import multer from "multer";
+
 import cors from "cors";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./Inngest/index.js";
@@ -17,6 +18,8 @@ import attendanceRouter from "./routes/AttendanceRoutes.js";
 import LeaveRouter from "./routes/LeaveRoutes.js";
 import paySlipRouter from "./routes/PaySlipsRoutes.js";
 import dashboardRouter from "./routes/DashboardRoutes.js";
+import cloudinary from './config/cloudinary.js'; // This now gets the keys correctly
+
 
 
 const app = express();
@@ -39,7 +42,6 @@ app.get("/", (req, res) => {
 
 
 app.use(express.json());
-app.use(multer().none());
 
 
 const inngestHandler = serve({ 
