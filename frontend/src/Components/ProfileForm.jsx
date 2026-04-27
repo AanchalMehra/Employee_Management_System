@@ -1,7 +1,6 @@
 import { User, AlertCircle, Loader2, Upload, Trash2, CheckCircle2 } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
-import { compressImage } from "../utils/CompressImage.js"
 
 function ProfileForm({ initialData, onSuccess }) {
     const [loading, setLoading] = useState(false);
@@ -24,9 +23,9 @@ function ProfileForm({ initialData, onSuccess }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // validate file (important for phone)
-    if (!file.type.startsWith("image/")) {
-        setError("Only image files are allowed");
+
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setError("Only JPG or PNG images are allowed");
         return;
     }
 
@@ -36,25 +35,18 @@ function ProfileForm({ initialData, onSuccess }) {
 
     console.log("FILE:", file);
     console.log("TYPE:", file.type);
+    console.log("SIZE:", file.size / 1024, "KB");
 
-    // local preview
+    // Local preview
     const localPreview = URL.createObjectURL(file);
     setImagePreview(localPreview);
 
     const formData = new FormData();
 
-const compressedBlob = await compressImage(file);
 
-const compressedFile = new File(
-  [compressedBlob],
-  file.name.replace(/\.\w+$/, ".jpg"),
-  { type: "image/jpeg" }
-);
+    // Upload original file directly
+    formData.append("profileImage", file);
 
-console.log("Original:", file.size / 1024, "KB");
-console.log("Compressed:", compressedFile.size / 1024, "KB");
-
-formData.append("profileImage", compressedFile);
     try {
         const response = await api.post("/profile", formData, {
             headers: {
@@ -74,7 +66,7 @@ formData.append("profileImage", compressedFile);
 
         setError(
             err?.response?.data?.err ||
-            "Upload failed. Try smaller image or different format."
+            "Upload failed. Try a different image."
         );
 
         setImagePreview(initialData?.profileImage || "");
@@ -85,7 +77,6 @@ formData.append("profileImage", compressedFile);
         if (e.target) e.target.value = null;
     }
 };
-
     const handleInstantRemove = async () => {
         if (!window.confirm("Remove profile photo?")) return;
 
@@ -191,8 +182,8 @@ formData.append("profileImage", compressedFile);
                         ref={fileInputRef} 
                         onChange={handleInstantUpload} 
                         className="hidden" 
-                        accept="image/*"
-                        capture="environment"
+                        accept="image/png, image/jpeg"
+                        
                         />
                 </div>
             </div>
