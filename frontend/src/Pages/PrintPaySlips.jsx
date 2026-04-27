@@ -29,7 +29,6 @@ function PrintPaySlips() {
 
             <div className="max-w-2xl mx-auto bg-white border border-slate-100 p-10 sm:p-16 rounded-xl shadow-md print:shadow-none print:border-none print:rounded-none print:p-8">
 
-                {/* HEADER */}
                 <div className="text-center mb-10">
                     <h1 className="text-3xl font-semibold tracking-[0.35em] uppercase text-slate-900 print:text-black">
                         Payslip
@@ -40,9 +39,7 @@ function PrintPaySlips() {
                     </p>
                 </div>
 
-                {/* EMPLOYEE INFO (CLEAN TABLE STYLE) */}
                 <div className="mb-10 border border-slate-100 rounded-xl overflow-hidden">
-
                     <div className="grid grid-cols-2">
 
                         <div className="border-b border-r border-slate-100 p-4">
@@ -82,77 +79,71 @@ function PrintPaySlips() {
                         </div>
 
                     </div>
-
                 </div>
 
-                {/* DIVIDER */}
                 <div className="border-t border-slate-200 my-8"></div>
-                
 
-                {/* SALARY TABLE */}
                 <table className="w-full text-left border-collapse print:text-black">
+                    <thead>
+                        <tr className="border-b border-slate-200 text-[11px] uppercase tracking-wide text-slate-500 font-medium">
+                            <th className="pb-3 px-6">Description</th>
+                            <th className="pb-3 px-6 text-right">Amount</th>
+                        </tr>
+                    </thead>
 
-    <thead>
-        <tr className="border-b border-slate-200 text-[11px] uppercase tracking-wide text-slate-500 font-medium">
-            <th className="pb-3 px-6">Description</th>
-            <th className="pb-3 px-6 text-right">Amount</th>
-        </tr>
-    </thead>
+                    <tbody>
 
-    <tbody>
+                        <tr className="border-b border-slate-100">
+                            <td className="py-4 px-6 text-sm font-medium text-slate-700">
+                                Basic Salary
+                            </td>
+                            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-slate-900">
+                                {(payslip.basicSalary ?? 0).toLocaleString("en-IN", {
+                                    style: "currency",
+                                    currency: "INR",
+                                })}
+                            </td>
+                        </tr>
 
-        <tr className="border-b border-slate-100">
-            <td className="py-4 px-6 text-sm font-medium text-slate-700">
-                Basic Salary
-            </td>
-            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-slate-900">
-                {(payslip.basicSalary ?? 0).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                })}
-            </td>
-        </tr>
+                        <tr className="border-b border-slate-100">
+                            <td className="py-4 px-6 text-sm font-medium text-slate-700">
+                                Allowances
+                            </td>
+                            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-slate-900">
+                                {(payslip.allowances ?? 0).toLocaleString("en-IN", {
+                                    style: "currency",
+                                    currency: "INR",
+                                })}
+                            </td>
+                        </tr>
 
-        <tr className="border-b border-slate-100">
-            <td className="py-4 px-6 text-sm font-medium text-slate-700">
-                Allowances
-            </td>
-            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-slate-900">
-                {(payslip.allowances ?? 0).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                })}
-            </td>
-        </tr>
+                        <tr className="border-b border-slate-100">
+                            <td className="py-4 px-6 text-sm font-medium text-slate-700">
+                                Deductions
+                            </td>
+                            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-rose-500">
+                                {(payslip.deductions ?? 0).toLocaleString("en-IN", {
+                                    style: "currency",
+                                    currency: "INR",
+                                })}
+                            </td>
+                        </tr>
 
-        <tr className="border-b border-slate-100">
-            <td className="py-4 px-6 text-sm font-medium text-slate-700">
-                Deductions
-            </td>
-            <td className="py-4 px-6 text-sm font-medium text-right tabular-nums text-rose-500">
-                {(payslip.deductions ?? 0).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                })}
-            </td>
-        </tr>
+                        <tr className="border-t-2 border-slate-300 bg-slate-50">
+                            <td className="py-4 px-6 text-sm font-bold text-slate-900">
+                                Net Salary
+                            </td>
+                            <td className="py-4 px-6 text-lg font-bold text-right tabular-nums text-slate-900">
+                                {(payslip.netSalary ?? 0).toLocaleString("en-IN", {
+                                    style: "currency",
+                                    currency: "INR",
+                                })}
+                            </td>
+                        </tr>
 
-        <tr className="border-t-2 border-slate-300 bg-slate-50">
-            <td className="py-4 px-6 text-sm font-bold text-slate-900">
-                Net Salary
-            </td>
-            <td className="py-4 px-6 text-lg font-bold text-right tabular-nums text-slate-900">
-                {(payslip.netSalary ?? 0).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                })}
-            </td>
-        </tr>
+                    </tbody>
+                </table>
 
-    </tbody>
-</table>
-
-                {/* PRINT BUTTON */}
                 <div className="mt-12 flex justify-center print:hidden">
                     <button
                         onClick={() => window.print()}

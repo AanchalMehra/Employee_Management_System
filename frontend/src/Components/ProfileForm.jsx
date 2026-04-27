@@ -1,6 +1,7 @@
 import { User, AlertCircle, Loader2, Upload, Trash2, CheckCircle2 } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
+import { compressImage } from "../utils/CompressImage.js"
 
 function ProfileForm({ initialData, onSuccess }) {
     const [loading, setLoading] = useState(false);
@@ -20,40 +21,70 @@ function ProfileForm({ initialData, onSuccess }) {
     }, [initialData]);
 
     const handleInstantUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-        setImageLoading(true);
-        setError("");
-        setMessage("");
+    // validate file (important for phone)
+    if (!file.type.startsWith("image/")) {
+        setError("Only image files are allowed");
+        return;
+    }
 
-        // OPTIONAL: Show local preview immediately for instant feedback
-        const localPreview = URL.createObjectURL(file);
-        setImagePreview(localPreview);
+    setImageLoading(true);
+    setError("");
+    setMessage("");
 
-        const formData = new FormData();
-        formData.append("profileImage", file);
+    console.log("FILE:", file);
+    console.log("TYPE:", file.type);
 
-        try {
-            const response = await api.post("/profile", formData);
-            if (response.data.success) {
-                // ADD TIMESTAMP HERE: This is the secret to making the "Change" button work
-                const newUrl = `${response.data.employee.profileImage}?t=${new Date().getTime()}`;
-                setImagePreview(newUrl);
-                
-                window.dispatchEvent(new Event("profileUpdated"));
-                setMessage("Photo updated successfully!");
-            }
-        } catch (err) {
-            setError("Upload failed. Check your connection or file size.");
-            // Revert preview on failure
-            setImagePreview(initialData?.profileImage || "");
-        } finally {
-            setImageLoading(false);
-            // RESET INPUT: This allows you to pick the same file again if you delete it
-            if (e.target) e.target.value = null; 
+    // local preview
+    const localPreview = URL.createObjectURL(file);
+    setImagePreview(localPreview);
+
+    const formData = new FormData();
+
+const compressedBlob = await compressImage(file);
+
+const compressedFile = new File(
+  [compressedBlob],
+  file.name.replace(/\.\w+$/, ".jpg"),
+  { type: "image/jpeg" }
+);
+
+console.log("Original:", file.size / 1024, "KB");
+console.log("Compressed:", compressedFile.size / 1024, "KB");
+
+formData.append("profileImage", compressedFile);
+    try {
+        const response = await api.post("/profile", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        if (response.data.success) {
+            const newUrl = `${response.data.employee.profileImage}?t=${Date.now()}`;
+            setImagePreview(newUrl);
+
+            window.dispatchEvent(new Event("profileUpdated"));
+            setMessage("Photo updated successfully!");
         }
-    };
+    } catch (err) {
+        console.log("UPLOAD ERROR:", err.response || err);
+
+        setError(
+            err?.response?.data?.err ||
+            "Upload failed. Try smaller image or different format."
+        );
+
+        setImagePreview(initialData?.profileImage || "");
+    } finally {
+        setImageLoading(false);
+
+        // allow reselect same file
+        if (e.target) e.target.value = null;
+    }
+};
 
     const handleInstantRemove = async () => {
         if (!window.confirm("Remove profile photo?")) return;
@@ -66,7 +97,11 @@ function ProfileForm({ initialData, onSuccess }) {
         formData.append("removeImage", "true");
 
         try {
-            const response = await api.post("/profile", formData);
+            const response = await api.post("/profile", formData, {
+              headers: {
+                    "Content-Type": "multipart/form-data",
+                       },
+                 });
             if (response.data.success) {
                 setImagePreview("");
                 window.dispatchEvent(new Event("profileUpdated"));
@@ -156,8 +191,9 @@ function ProfileForm({ initialData, onSuccess }) {
                         ref={fileInputRef} 
                         onChange={handleInstantUpload} 
                         className="hidden" 
-                        accept="image/*" 
-                    />
+                        accept="image/*"
+                        capture="environment"
+                        />
                 </div>
             </div>
 

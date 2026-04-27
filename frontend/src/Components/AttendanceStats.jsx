@@ -3,11 +3,11 @@ import React from 'react'
 
 function AttendanceStats({history}) {
   const totalPresent=history.filter((h)=>
-     h.status==="Present" || h.status==="Late"
+     h.status==="PRESENT" || h.status==="LATE"
   ).length
 
   const totalLate=history.filter((h)=>
-   h.status==="Late"
+   h.status==="LATE"
   ).length
 
   const stats=[

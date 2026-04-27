@@ -7,17 +7,17 @@ function EmployeeDashboard({data}){
 const cards=[{
     title: "Latest Payslip",
     icon: <IndianRupeeIcon size={20} />,
-   value: data.payslips?.[0]?.amount || 0
+   value: data.latestPayslip?.netSalary || 0
 },
 {
     title: "Attendance",
     icon: <CalendarCheck size={20} />,
-    value: data.attendance?.present|| 0
+    value: data.currentMonthAttendance || 0
 },
 {
     title: "Pending Leaves",
     icon: <FileTextIcon size={20} />,
-    value: data.attendance?.leave|| 0
+    value:  data.pendingLeaves || 0
 }
 ]
 

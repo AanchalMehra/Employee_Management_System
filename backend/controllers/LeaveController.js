@@ -55,7 +55,7 @@ export const createLeave=async(req,res)=>{
 //GET Leave
 // Get /api/leaves
 
-/* ================= GET Leave ================= */
+/GET Leave /
 export const getLeave = async (req, res) => {
   try {
    const user = req.user;
