@@ -39,13 +39,11 @@ function Settings() {
   if (loading) return <Loading />
   
   return (
-    // Added overflow-x-hidden to prevent horizontal scroll and adjusted p-4 for mobile
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-6 space-y-8 overflow-x-hidden">
-      
+    <div className="w-full max-w-5xl mx-auto pt-1 pb-4 md:pt-2 md:p-4 space-y-6 overflow-x-hidden">      
       {/* Header Section */}
       <div className="space-y-1 px-1">
-        <h1 className="font-bold text-2xl text-slate-900 tracking-tight">Settings</h1>
-        <p className="text-slate-400 text-sm">Manage your account and preferences</p>
+        <h1 className="font-semibold text-2xl text-slate-900 ">Settings</h1>
+        <p className="text-slate-400 text-sm mt-1">Manage your account and preferences</p>
       </div>
 
       {/* Profile Section - Ensure ProfileForm uses w-full internally */}

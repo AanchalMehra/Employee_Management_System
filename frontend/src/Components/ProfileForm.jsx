@@ -154,9 +154,9 @@ function ProfileForm({ initialData, onSuccess }) {
 
                 <div className="flex flex-col items-center sm:items-start flex-1">
                     <h4 className="text-base font-black text-slate-900 mb-1">Profile Picture</h4>
-                    <p className="text-xs text-slate-400 mb-5">Click below to manage your photo. Changes save instantly.</p>
+                    <p className="text-xs text-slate-400 mb-5">Click below to manage your photo.</p>
                     
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-3 justify-center">
                         <button 
                             type="button" 
                             onClick={() => fileInputRef.current?.click()}
@@ -225,7 +225,7 @@ function ProfileForm({ initialData, onSuccess }) {
                     </div>
 
                     {!isDeleted && (
-                        <div className="pt-4 flex justify-start">
+                        <div className="pt-4 flex justify-center sm:justify-start">
                             <button 
                                 type="submit" 
                                 disabled={loading}

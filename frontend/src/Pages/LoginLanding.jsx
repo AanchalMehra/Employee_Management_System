@@ -14,7 +14,7 @@ function LoginLanding(){
             <LoginLeftSide />
 
       {/* RIGHT SIDE - Preserving your original alignment and structure */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white gap-6 p-10 rounded-2xl shadow-md">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white gap-6 p-10 shadow-md">
   
   <h2 className="text-2xl font-bold text-[#0f172a] tracking-tight">
     Select your portal to safely login

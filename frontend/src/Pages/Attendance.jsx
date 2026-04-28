@@ -44,13 +44,15 @@ function Attendance() {
   if (loading) return <Loading />;
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex justify-between items-start">
+    <div className="container mx-auto pt-1 pb-2 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0">
         <div>
-          <h1 className="font-bold text-2xl">Attendance</h1>
-          <p className="text-slate-400 text-sm">Track your daily hours</p>
+          <h1 className="font-semibold text-2xl text-slate-900">Attendance</h1>
+          <p className="text-slate-400 text-sm ">Track your daily hours</p>
         </div>
-        <CheckInButton todayRecord={todayRecord} onAction={fetchData} />
+        <div className="self-start sm:self-auto w-fit">
+          <CheckInButton todayRecord={todayRecord} onAction={fetchData} />
+        </div>
       </div>
 
       <AttendanceStats history={history} />

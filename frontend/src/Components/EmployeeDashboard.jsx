@@ -7,7 +7,7 @@ function EmployeeDashboard({data}){
 const cards=[{
     title: "Latest Payslip",
     icon: <IndianRupeeIcon size={20} />,
-   value: data.latestPayslip?.netSalary || 0
+   value: data.latestPayslip?.netSalary.toLocaleString("en-IN") || 0
 },
 {
     title: "Attendance",
@@ -22,13 +22,13 @@ const cards=[{
 ]
 
    return(
-    <>
-      <div  className="mb-6">
-         <h1 className="font-semibold text-2xl ">Welcome, {firstName}!</h1>
-         <p className="text-slate-400 text-sm mt-1">{data.position} - {data.dept}</p>
+    <div className="container mx-auto pt-1 pb-4 space-y-6">
+      <div  className="mb-6 px-4 md:px-0">
+         <h1 className="font-semibold text-2xl text-slate-900">Welcome, {firstName}!</h1>
+         <p className="text-slate-400 text-sm mt-1">{data.employee?.position} - {data.employee?.departments}</p>
       </div>
 
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 bg-white">
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-2 bg-white">
   {cards.map((card, index) => {
     return (
       <div 
@@ -37,6 +37,7 @@ const cards=[{
                    transition-all duration-300 ease-in-out cursor-pointer
                    hover:bg-white hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 group"
       >
+        
         {/* Title: card.title */}
         <h1 className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-4 group-hover:text-blue-600 transition-colors">
           {card.title}
@@ -75,7 +76,7 @@ Apply for Leave
   </Link>
 </div>
        
-    </>
+    </div>
    )
 }
 export default EmployeeDashboard

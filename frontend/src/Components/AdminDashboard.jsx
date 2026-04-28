@@ -30,9 +30,9 @@ function AdminDashboard({data}){
     ]
 
   return(
-      <>
+      <div className="container mx-auto pt-1 pb-4">
       <div className="mb-6 px-4 md:px-0">
-            <h1 className="font-semibold text-2xl text-slate-800">Dashboard</h1>
+            <h1 className="font-semibold text-2xl text-slate-900">Dashboard</h1>
             <p className="text-slate-400 text-sm mt-1">Welcome Admin - here's your overview</p>
       </div>
 
@@ -47,12 +47,17 @@ function AdminDashboard({data}){
                        hover:bg-white hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 group
                        min-w-0" // Prevents the card from expanding past its flex/grid parent
           >
-            {/* Title */}
-            <h1 className="text-gray-500 text-[10px] md:text-[11px] font-bold uppercase tracking-widest mb-4 group-hover:text-blue-600 transition-colors truncate">
-              {stat.label}
-            </h1>
+            <div className="leading-normal  mt-2">
+  <h1 className="text-gray-500 text-[12px] font-bold uppercase tracking-widest m-0">
+    {stat.label}
+  </h1>
 
-            <div className="flex items-center gap-3 md:gap-4">
+  <p className="text-[10px] text-gray-400 m-0 mt-0.5 leading-snug">
+    {stat.description}
+  </p>
+</div>
+
+            <div className="flex items-center gap-3 md:gap-4 mt-2">
               {/* Icon Wrapper */}
               <div className="flex-shrink-0 p-3 bg-white rounded-xl text-gray-600 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                 {stat.icon}
@@ -67,7 +72,7 @@ function AdminDashboard({data}){
         )
       })}
     </div>
-    </>
+    </div>
   )
 }
 export default AdminDashboard;

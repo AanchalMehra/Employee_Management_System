@@ -23,7 +23,7 @@ function AttendanceStats({history}) {
     },
      {
       label:"Avg work hrs",
-      value:"8.5hrs",
+      value:"8.5 hrs",
       icon: <ClockIcon/>
     }
   ]

@@ -36,13 +36,12 @@ function LoginForm({ role, title, subtitle }) {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex min-h-screen bg-white">
       
       <LoginLeftSide />
 
-      {/* RIGHT SIDE - Clean White Theme with Navy Accents */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6 md:p-12">
-        <div className="w-full max-w-md">
+      {/* RIGHT SIDE */}
+<div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6 md:p-12 min-h-screen md:min-h-0">        <div className="w-full max-w-md">
           
           <Link to="/login">
             <button className="flex items-center gap-2 text-slate-400 hover:text-[#0f172a] transition-all mb-10 group">

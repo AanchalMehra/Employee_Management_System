@@ -61,10 +61,10 @@ function Leave(){
 ]
 
     return(
-        <div className="animate-fade-in">
+        <div className="container mx-auto pt-1 pb-4 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="font-semibold text-2xl">Leave Management</h1>
+          <h1 className="font-semibold text-2xl text-slate-900">Leave Management</h1>
           <p className="text-slate-400 text-sm mt-1">
             {isAdmin?"Manage leave application":"Your leave history and requests"}
           </p>
