@@ -102,7 +102,7 @@ const LeaveApplicationReminder = inngest.createFunction(
     // wait for 24 hours
     await step.sleepUntil(
       "wait-for-24-hours",
-      new Date(Date.now() + 24 * 60 * 60 * 1000)
+      new Date(Date.now().getTime() + 24 * 60 * 60 * 1000)
     );
 
     // check leave status
