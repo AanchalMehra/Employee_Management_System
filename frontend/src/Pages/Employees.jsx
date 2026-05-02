@@ -73,6 +73,15 @@ console.log("Deleted items in list:", filtered.filter(e => e.isDeleted).length);
             onClick={() => setIsModalOpen(false)}
           />
           <div className="relative bg-white w-full max-w-lg rounded-[2rem] shadow-2xl border overflow-hidden z-[1000]">
+            <div className="px-6 pt-6 pr-6">
+  <h2 className="text-xl sm:text-2xl font-black text-[#1e293b] leading-tight">
+    Add Employee
+  </h2>
+
+  <p className="text-slate-400 text-xs sm:text-sm mt-1 font-medium italic">
+    Add a new employee to your organization
+  </p>
+</div>
             <EmployeeForm
               initialData={editEmployee}
               onCancel={() => setIsModalOpen(false)}

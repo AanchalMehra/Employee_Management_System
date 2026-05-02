@@ -18,57 +18,64 @@ const autoCheckOut = inngest.createFunction(
     const { employeeId, attendanceId } = event.data;
 
     // wait for 9 hours
-    await step.sleepUntil(
-      "wait-for-9-hours",
+    await step.sleepUntil("wait-for-9-hours",
       new Date(Date.now() + 9 * 60 * 60 * 1000)
     );
 
     // get attendance data
     let attendance = await Attendance.findById(attendanceId);
 
-    if (attendance && !attendance.checkOut) {
+    if (attendance && !attendance?.checkOut) {
       const employee = await Employee.findById(employeeId);
 
       // send reminder email
       await sendEmail({
         to: employee.email,
         subject: "Attendance check-out Reminder",
-        body: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        body: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
 
-            <h2>Hi ${employee.firstName},</h2>
+  <h2>Hi ${employee.firstName},</h2>
 
-            <p>
-              You have a check-in in <b>${employee.department}</b>.
-            </p>
+  <p>
+    You have completed <b>9 working hours</b> today.
+  </p>
 
-            <p>
-              Please make sure to check in within <b>1 hour</b>.
-            </p>
+  <p>
+    Please make sure to check out within <b>1 hour</b>.
+  </p>
 
-            <p>
-              If you have any questions, please contact your admin.
-            </p>
+  <p>
+    If no checkout is marked, the system will automatically check you out
+    and mark your attendance as <b>Half Day</b>.
+  </p>
 
-            <hr />
+  <p>
+    If you have any questions, please contact your admin.
+  </p>
 
-            <p style="font-size: 12px; color: gray;">
-              Attendance reminder: Check-in time is 
-              <b>${new Date().toLocaleString()}</b>
-            </p>
+  <br/>
 
-          </div>
-        `,
+  <p>Best regards,</p>
+  <p><b>EMS</b></p>
+
+  <hr />
+
+  <p style="font-size: 12px; color: gray;">
+    Reminder sent at:
+    <b>${new Date().toLocaleString()}</b>
+  </p>
+
+</div>`
       });
 
       await step.sleepUntil(
         "wait-for-1-hour",
-        new Date(Date.now() + 1 * 60 * 60 * 1000)
+        new Date(Date.now().getTime() + 1 * 60 * 60 * 1000)
       );
 
       attendance = await Attendance.findById(attendanceId);
 
-      if (attendance && !attendance.checkOut) {
+      if (attendance && !attendance?.checkOut) {
         attendance.checkOut =
           new Date(attendance.checkIn).getTime() + 4 * 60 * 60 * 1000;
 
