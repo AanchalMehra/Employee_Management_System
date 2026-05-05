@@ -7,7 +7,7 @@ import sendEmail from "../config/Nodemailer.js";
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "ems" });
 
-/* ---------------- AUTO CHECK-OUT EMPLOYEE ---------------- */
+/*AUTO CHECK-OUT EMPLOYEE*/
 
 const autoCheckOut = inngest.createFunction(
   {
@@ -19,7 +19,7 @@ const autoCheckOut = inngest.createFunction(
 
     // wait for 9 hours
     await step.sleepUntil("wait-for-9-hours",
-      new Date(Date.now() + 9 * 60 * 60 * 1000)
+      new Date(new Date().getTime() + 9 * 60 * 60 * 1000)
     );
 
     // get attendance data
@@ -70,7 +70,7 @@ const autoCheckOut = inngest.createFunction(
 
       await step.sleepUntil(
         "wait-for-1-hour",
-        new Date(Date.now().getTime() + 1 * 60 * 60 * 1000)
+        new Date(new Date().getTime() + 1 * 60 * 60 * 1000)
       );
 
       attendance = await Attendance.findById(attendanceId);
@@ -89,7 +89,7 @@ const autoCheckOut = inngest.createFunction(
   }
 );
 
-/* ---------------- LEAVE APPLICATION REMINDER ---------------- */
+/* LEAVE APPLICATION REMINDER  */
 
 const LeaveApplicationReminder = inngest.createFunction(
   {
@@ -102,7 +102,7 @@ const LeaveApplicationReminder = inngest.createFunction(
     // wait for 24 hours
     await step.sleepUntil(
       "wait-for-24-hours",
-      new Date(Date.now().getTime() + 24 * 60 * 60 * 1000)
+      new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
     );
 
     // check leave status
@@ -121,7 +121,7 @@ const LeaveApplicationReminder = inngest.createFunction(
             <h2>Hi Admin,</h2>
 
             <p>
-              You have a leave application from <b>${employee.department}</b>.
+              You have a leave application from <b>${employee.departments}</b>.
             </p>
 
             <p>
@@ -146,7 +146,7 @@ const LeaveApplicationReminder = inngest.createFunction(
   }
 );
 
-/* ---------------- ATTENDANCE REMINDER CRON ---------------- */
+/* ATTENDANCE REMINDER CRON */
 
 const attendanceReminderCron = inngest.createFunction(
   {
@@ -178,12 +178,12 @@ const attendanceReminderCron = inngest.createFunction(
           employmentStatus: "ACTIVE",
         }).lean();
 
-        return employees.map((e) => ({
-          _id: e._id.toString(),
-          firstName: e.firstName,
-          lastName: e.lastName,
-          email: e.email,
-          departments: e.departments,
+        return employees.map((employee) => ({
+          _id: employee._id.toString(),
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          email: employee.email,
+          departments: employee.departments,
         }));
       }
     );
@@ -264,7 +264,7 @@ const attendanceReminderCron = inngest.createFunction(
   }
 );
 
-/* ---------------- EXPORT FUNCTIONS ---------------- */
+
 
 export const functions = [
   autoCheckOut,
